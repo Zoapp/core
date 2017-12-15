@@ -1,19 +1,20 @@
 {
   "name": "zoapp-core",
-  "version": "0.0.2",
+  "version": "0.2.2",
   "description": "Javascript ES7 helper/database framework to develop modern backend services using NodeJS",
   "main": "index.js",
   "author": "Mik BRY <mik@zoapp.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon -w src --exec \"babel-node src\"",
-    "build": "babel src -s -D -d dist",
-    "start": "node dist",
-    "prestart": "yarn run -s build",
-    "lint": "eslint src",
+    "clean-dist": "rm -r -f dist && mkdir dist",    
+    "start:dev": "nodemon -w src --exec \"babel-node src\"",
+    "build:dev": "babel src -s -D -d dist",
+    "start:prod": "node dist",
+    "build:prod": "yarn run -s build",
+    "lint:dev": "eslint src --rule 'no-console: off'",
+    "lint:prod": "eslint src",
     "compile": "babel -d dist/ src/ && cp -f ./package.json ./dist/package.json",
-    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register",
-    "prepublish": "yarn run compile"
+    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register"
   },
   "keywords": [
     "Node",
@@ -34,6 +35,7 @@
     }
   },
   "dependencies": {
+    "zoapp-core": "",
     "mysql2": "^1.4.2"
   },
   "devDependencies": {
