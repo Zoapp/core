@@ -1,0 +1,53 @@
+{
+  "name": "zoapp-core",
+  "version": "0.0.2",
+  "description": "Javascript ES7 helper/database framework to develop modern backend services using NodeJS",
+  "main": "index.js",
+  "author": "Mik BRY <mik@zoapp.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon -w src --exec \"babel-node src\"",
+    "build": "babel src -s -D -d dist",
+    "start": "node dist",
+    "prestart": "yarn run -s build",
+    "lint": "eslint src",
+    "compile": "babel -d dist/ src/ && cp -f ./package.json ./dist/package.json",
+    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register",
+    "prepublish": "yarn run compile"
+  },
+  "keywords": [
+    "Node",
+    "ES7"
+  ],
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 7,
+      "sourceType": "module"
+    },
+    "env": {
+      "node": true
+    },
+    "rules": {
+      "no-console": 0,
+      "no-unused-vars": 1
+    }
+  },
+  "dependencies": {
+    "mysql2": "^1.4.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-es2016": "^6.24.1",
+    "chai": "^3.5.0",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "11.2.0",
+    "eslint-plugin-import": "2.2.0",
+    "mocha": "^3.4.2",
+    "nodemon": "^1.11.0"
+  }
+}
