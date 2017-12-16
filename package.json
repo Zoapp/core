@@ -1,41 +1,43 @@
 {
   "name": "zoapp-core",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Javascript ES7 helper/database framework to develop modern backend services using NodeJS",
-  "main": "index.js",
   "author": "Mik BRY <mik@zoapp.com>",
   "license": "MIT",
+  "main": "index.js",
   "scripts": {
     "clean-dist": "rm -r -f dist && mkdir dist",    
     "start:dev": "nodemon -w src --exec \"babel-node src\"",
     "build:dev": "babel src -s -D -d dist",
     "start:prod": "node dist",
-    "build:prod": "yarn run -s build",
+    "build:prod": "yarn clean-dist && babel src -s -D -d dist && cp -f ./package.json ./dist/package.json && cp -f ./LICENSE ./dist/LICENSE && cp -f ./README.md ./dist/README.md",
     "lint:dev": "eslint src --rule 'no-console: off'",
     "lint:prod": "eslint src",
-    "compile": "babel -d dist/ src/ && cp -f ./package.json ./dist/package.json",
-    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register"
+    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register",
+    "willPublish": "yarn run lint:prod && yarn run test && yarn run build:prod",
+    "distribute": "yarn willPublish && npm publish ./dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zoapp/core.git"
+  },
+  "homepage": "https://github.com/Zoapp/core",
+  "bugs": {
+    "url": "https://github.com/Zoapp/core/issues"
   },
   "keywords": [
     "Node",
     "ES7"
   ],
-  "eslintConfig": {
-    "extends": "eslint:recommended",
-    "parserOptions": {
-      "ecmaVersion": 7,
-      "sourceType": "module"
-    },
-    "env": {
-      "node": true
-    },
-    "rules": {
-      "no-console": 0,
-      "no-unused-vars": 1
-    }
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist"
+  ],
+  "engines": {
+    "node": ">=8.5.0"
   },
   "dependencies": {
-    "zoapp-core": "",
     "mysql2": "^1.4.2"
   },
   "devDependencies": {
