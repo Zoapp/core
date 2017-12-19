@@ -1,6 +1,6 @@
 {
   "name": "zoapp-core",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Javascript ES7 helper/database framework to develop modern backend services using NodeJS",
   "author": "Mik BRY <mik@zoapp.com>",
   "license": "MIT",
@@ -13,7 +13,7 @@
     "build:prod": "yarn clean-dist && babel src -s -D -d dist && cp -f ./package.json ./dist/package.json && cp -f ./LICENSE ./dist/LICENSE && cp -f ./README.md ./dist/README.md",
     "lint:dev": "eslint src --rule 'no-console: off'",
     "lint:prod": "eslint src",
-    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register",
+    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register --exit",
     "willPublish": "yarn run lint:prod && yarn run test && yarn run build:prod",
     "distribute": "yarn willPublish && npm publish ./dist"
   },
@@ -29,29 +29,24 @@
     "Node",
     "ES7"
   ],
-  "files": [
-    "LICENSE",
-    "README.md",
-    "dist"
-  ],
   "engines": {
     "node": ">=8.5.0"
   },
   "dependencies": {
-    "mysql2": "^1.4.2"
+    "mysql2": "^1.5.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.24.1",
-    "babel-eslint": "^7.2.3",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-preset-env": "^1.5.1",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.3",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-es2016": "^6.24.1",
-    "chai": "^3.5.0",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb-base": "11.2.0",
-    "eslint-plugin-import": "2.2.0",
-    "mocha": "^3.4.2",
-    "nodemon": "^1.11.0"
+    "chai": "^4.1.2",
+    "eslint": "^4.13.1",
+    "eslint-config-airbnb-base": "12.1.0",
+    "eslint-plugin-import": "2.8.0",
+    "mocha": "^4.0.1",
+    "nodemon": "^1.13.1"
   }
 }

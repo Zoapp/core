@@ -148,6 +148,7 @@ export default class MySQLDatabase extends Database {
   }
 
   async delete() {
+    await this.getConnection();
     if ((!this.parent) && this.connection) {
       await this.query(`DROP DATABASE IF EXISTS ${this.dbname}`);
       await this.close();
@@ -155,6 +156,7 @@ export default class MySQLDatabase extends Database {
   }
 
   async reset() {
+    await this.getConnection();
     if ((!this.parent) && (!this.connection)) {
       await this.load();
     }
