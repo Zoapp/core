@@ -8,5 +8,5 @@ script:
   - npm test
 env:
   - NODE_ENV=TEST
-services:
-  - mysql
+addons:
+  mariadb: '10.2'
