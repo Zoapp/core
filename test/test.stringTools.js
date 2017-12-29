@@ -7,6 +7,9 @@
 import { assert, expect } from "chai";
 import RandomStringGenerator from "../src/helpers/randomStringGenerator";
 import StringTools from "../src/helpers/stringTools";
+import setupLogger from "../src/helpers/logger";
+
+setupLogger("test");
 
 describe("Helpers", () => {
   it("generate RandomStringGenerator generate", () => {

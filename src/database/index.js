@@ -25,11 +25,17 @@ export default ({
     dt = parent.datatype;
   }
   if (dt && dt === "mysql" && name) {
-    db = mySQLDatabase({ host, name, user, password, descriptorFile, descriptor, parent });
+    db = mySQLDatabase({
+      host, name, user, password, descriptorFile, descriptor, parent,
+    });
   } else if (filename) {
-    db = fileDatabase({ filename, name, descriptorFile, descriptor, parent });
+    db = fileDatabase({
+      filename, name, descriptorFile, descriptor, parent,
+    });
   } else {
-    db = memDatabase({ name, descriptorFile, descriptor, parent });
+    db = memDatabase({
+      name, descriptorFile, descriptor, parent,
+    });
   }
   return db;
 };

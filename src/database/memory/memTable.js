@@ -52,7 +52,7 @@ export default class MemTable extends Table {
   async getItems(queryName = null) {
     const table = this.database.cache[this.name];
     let array = [];
-    // console.log("getItems", queryName, table);
+    // logger.info("getItems", queryName, table);
     if (table) {
       if (queryName) {
         const query = this.database.buildQuery(queryName);
@@ -73,7 +73,7 @@ export default class MemTable extends Table {
       if (table) {
         const res = Object.keys(table).filter(k => query.execute(table[k]));
         if (res.length === 1) {
-          item = res[0];
+          [item] = res;
         }
       }
     } else if (table && table[queryName]) {
@@ -123,10 +123,10 @@ export default class MemTable extends Table {
     let index = 0;
     const array = this.getItems(query);
     if (array) {
-      // console.log("array=" + JSON.stringify(array));
+      // logger.info("array=" + JSON.stringify(array));
       array.forEach((item) => {
         const key = item.id;
-        // console.log("key=" + key);
+        // logger.info("key=" + key);
         if (itemname !== key) {
           if (to === index + offset) {
             table[itemname] = itemToMove;
@@ -137,11 +137,11 @@ export default class MemTable extends Table {
       });
     }
 
-    // console.log("index=" + index + " to=" + to);
+    // logger.info("index=" + index + " to=" + to);
     if (to === index) {
       table[itemname] = itemToMove;
     }
-    // console.log("movedTable=" + JSON.stringify(table));
+    // logger.info("movedTable=" + JSON.stringify(table));
     this.database.cache[this.name] = table;
     if (!this.database.lock) {
       this.database.flush();

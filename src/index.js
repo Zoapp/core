@@ -9,5 +9,6 @@ import FileTools from "./helpers/fileTools";
 import RandomStringGenerator from "./helpers/randomStringGenerator";
 import Password from "./helpers/password";
 import dbCreate from "./database";
+import setupLogger from "./helpers/logger";
 
-export { StringTools, FileTools, Password, RandomStringGenerator, dbCreate };
+export { StringTools, FileTools, Password, RandomStringGenerator, dbCreate, setupLogger };

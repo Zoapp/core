@@ -17,7 +17,9 @@ export default class Database {
      *
      * @param string url
      */
-  constructor({ url, name, version, descriptorFile, descriptor, parent }) {
+  constructor({
+    url, name, version, descriptorFile, descriptor, parent,
+  }) {
     let n = name;
     if (!name) {
       n = url;
@@ -53,13 +55,13 @@ export default class Database {
    */
   getCollectionNameList() {
     let collectionNameList = null;
-    // console.log("descriptor=", this.descriptor);
+    // logger.info("descriptor=", this.descriptor);
     if (this.descriptor && this.descriptor.properties) {
       collectionNameList = Object.keys(this.descriptor.properties).filter((name) => {
         const property = this.descriptor.properties[name];
         return (!property.nested);
       }, this);
-      // console.log(JSON.stringify(collectionNameList));
+      // logger.info(JSON.stringify(collectionNameList));
     }
     return collectionNameList;
   }
@@ -68,7 +70,7 @@ export default class Database {
     let desc = null;
     if (this.descriptor && this.descriptor.properties) {
       desc = this.descriptor.properties[collectionName];
-      // console.log("desc=" + desc, collectionName);
+      // logger.info("desc=" + desc, collectionName);
     }
     return desc;
   }

@@ -16,7 +16,7 @@ export default class MySQLTable extends Table {
   async reset() {
     const n = MySQLDatabase.buildDbName(this.name);
     const sql = `DROP TABLE IF EXISTS ${n};`;
-    // console.log(query);
+    // logger.info(query);
     await this.database.query(sql);
   }
 
@@ -24,9 +24,9 @@ export default class MySQLTable extends Table {
     const query = `SHOW TABLES FROM ${this.database.dbname} LIKE '${this.name}';`;
 
     let v = false;
-    // console.log("exist ?", this.name);
+    // logger.info("exist ?", this.name);
     const [rows] = await this.database.query(query);
-    // console.log("exist find=", JSON.stringify(rows));
+    // logger.info("exist find=", JSON.stringify(rows));
     if (Array.isArray(rows) && rows.length > 0) {
       v = true;
     }
@@ -38,14 +38,14 @@ export default class MySQLTable extends Table {
     if (b) {
       return;
     }
-    // console.log("create", this.name);
-    const properties = this.database.getCollectionDescription(this.name).properties;
+    // logger.info("create", this.name);
+    const { properties } = this.database.getCollectionDescription(this.name);
     if (!properties) {
       throw new Error(`Undefined properties for this collection ${this.name}`);
     }
-    // console.log("properties", properties);
+    // logger.info("properties", properties);
     const propNames = await Object.keys(properties);
-    // console.log("propNames", propNames);
+    // logger.info("propNames", propNames);
     let sql = `CREATE TABLE IF NOT EXISTS ${MySQLDatabase.buildDbName(this.name)}`;
     sql += " (`id` binary(16) NOT NULL, id_text varchar(36) generated always as (hex(id)) virtual, ";
     propNames.forEach((n) => {
@@ -85,7 +85,7 @@ export default class MySQLTable extends Table {
     });
     sql +=
       "PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-    // console.log(sql);
+    // logger.info(sql);
     await this.database.query(sql);
   }
 
@@ -109,15 +109,15 @@ export default class MySQLTable extends Table {
       const query = this.database.buildQuery(queryName);
       // WIP create where statement from query
       if (query.where) {
-        where = query.where;
+        ({ where } = query);
       } else {
         let prev = null;
         query.cmps.forEach((cmp) => {
           if (prev) {
-            // console.log("associate=", prev.associate ? "OR" : "AND");
+            // logger.info("associate=", prev.associate ? "OR" : "AND");
             where += prev.associate ? " OR " : " AND ";
           }
-          // console.log("key=", cmp.key);
+          // logger.info("key=", cmp.key);
           let k = cmp.key;
           if (k === "id") {
             k = "idx";
@@ -133,20 +133,20 @@ export default class MySQLTable extends Table {
           prev = cmp;
         });
         query.where = where;
-        console.log(" where=", where);
+        logger.info(" where=", where);
       }
     }
     return where;
   }
 
   rebind(row) {
-    // console.log("rebind row=", row);
-    const properties = this.database.getCollectionDescription(this.name).properties;
+    // logger.info("rebind row=", row);
+    const { properties } = this.database.getCollectionDescription(this.name);
     const item = {};
     Object.keys(properties).forEach((key) => {
       const value = row[key];
-      // console.log("rebind key=", key, value);
-      const type = properties[key].type;
+      // logger.info("rebind key=", key, value);
+      const { type } = properties[key];
       if (value) {
         if (key === "id") {
           item.id = row.idx;
@@ -176,7 +176,7 @@ export default class MySQLTable extends Table {
           if (value.charAt(0) === "[") {
             item[key] = JSON.parse(value);
           } else if (value && value.indexOf(":") > 0) {
-            console.log("TODO unserialize PHP value", value);
+            logger.info("TODO unserialize PHP value", value);
           } else if (value && value.indexOf(",") > 0) {
             item[key] = value.trim().split(/\s*,\s*/);
           } else {
@@ -188,14 +188,14 @@ export default class MySQLTable extends Table {
             item[key] = JSON.parse(value);
           } else {
             if (value && value.indexOf(":") > 0) {
-              console.log("TODO unserialize PHP value", value);
+              logger.info("TODO unserialize PHP value", value);
             }
             item[key] = value;
           }
         }
       }
     });
-    // console.log("rebind row=", JSON.stringify(row));
+    // logger.info("rebind row=", JSON.stringify(row));
     return item;
   }
 
@@ -219,12 +219,12 @@ export default class MySQLTable extends Table {
         if (!properties[key]) {
           extras[key] = item[key];
         }
-      });*/
+      }); */
     }
     keys.forEach((key) => {
-      // console.log("key=", key, properties[key]);
+      // logger.info("key=", key, properties[key]);
       if (properties[key]) {
-        let type = properties[key].type;
+        let { type } = properties[key];
         if (key === "idx") {
           type = "string";
         }
@@ -233,23 +233,23 @@ export default class MySQLTable extends Table {
         if (key === "extras") {
           value = JSON.stringify(extras);
           type = "string";
-          // console.log("extras =", value);
+          // logger.info("extras =", value);
         }
         if (value !== undefined && value !== null) {
           if (key === "extras") {
             value = JSON.stringify(extras);
-            // console.log("extras =", value);
+            // logger.info("extras =", value);
           } else if (type === "#DateTime") {
             const date = new Date(value);
             // Y-m-d H:i:s.u
             value = `${date.getUTCFullYear()}-${MySQLTable.padNumber(date.getUTCMonth() + 1, 2)}-${MySQLTable.padNumber(date.getUTCDate(), 2)} ${MySQLTable.padNumber(date.getUTCHours(), 2)}:${MySQLTable.padNumber(date.getUTCMinutes(), 2)}:${MySQLTable.padNumber(date.getUTCSeconds(), 2)}.${MySQLTable.padNumber(date.getUTCMilliseconds(), 3)}`;
           } else if (type === "#Map" || type === "array" || type === "object") {
-            // console.log("typeof=", (typeof value));
+            // logger.info("typeof=", (typeof value));
             if (value && (Array.isArray(value) || (!(typeof value === "string")))) {
               value = JSON.stringify(value);
             } /* else {
-              console.log("array error", value);
-            }*/
+              logger.info("array error", value);
+            } */
           } else if (type === "#Order" || type === "number") {
             if (value) {
               value = Number(value);
@@ -263,7 +263,7 @@ export default class MySQLTable extends Table {
           } else if (type === "string") {
             value = value || "";
           } else if (type !== "integer" && type !== "#Link") {
-            console.log("unknown type=", type);
+            logger.info("unknown type=", type);
           }
           fields.push(value);
           if (key === "extras") {
@@ -275,7 +275,7 @@ export default class MySQLTable extends Table {
       } else if (extras) {
         extras[key] = item[key];
       } else {
-        console.log("Unknown extra value key=", key);
+        logger.info("Unknown extra value key=", key);
       }
     });
     return fields;
@@ -288,12 +288,12 @@ export default class MySQLTable extends Table {
     // TODO sorting
     const sql = `SELECT * FROM ${this.name} ${this.doWhereQuery(this.query)};`;
     const result = await this.database.query(sql);
-    // console.log("result=", result);
+    // logger.info("result=", result);
     for (const row of result[0]) {
       let item = null;
       if (row) {
         item = this.rebind(row);
-        // console.log("item=", item);
+        // logger.info("item=", item);
       }
       const r = await callback(item);
       if (r) {
@@ -321,8 +321,7 @@ export default class MySQLTable extends Table {
       const fields = [];
       this.buildStatement(fields, keys, item, true);
       fields.push(item.id);
-      promises.push(this.database
-      .execute(sql, fields));
+      promises.push(this.database.execute(sql, fields));
     });
     await Promise.all(promises);
   }
@@ -331,7 +330,7 @@ export default class MySQLTable extends Table {
     const properties = this.getProperties();
     let sql = null;
     const { id, ...item } = value;
-    // console.log("item=", JSON.stringify(item));
+    // logger.info("item=", JSON.stringify(item));
     const fields = [];
     let i = id;
     const keys = [];
@@ -341,7 +340,7 @@ export default class MySQLTable extends Table {
           keys.push(k);
         }
       } else {
-        console.log("unknown key=", k);
+        logger.info("unknown key=", k);
       }
     });
     if (properties.extras) {
@@ -381,7 +380,7 @@ export default class MySQLTable extends Table {
       this.buildStatement(fields, keys, item, properties);
     }
     const result = await this.execute(sql, fields);
-    // console.log("result=", result);
+    // logger.info("result=", result);
     if (!result) {
       i = null;
     }
@@ -407,9 +406,9 @@ export default class MySQLTable extends Table {
   async getItem(queryName) {
     // WIP
     const sql = `SELECT * FROM \`${this.name}\`${this.doWhereQuery(queryName)};`;
-    // console.log("sql=", sql);
+    // logger.info("sql=", sql);
     const result = await this.database.query(sql);
-    // console.log("getItem result:", result);
+    // logger.info("getItem result:", result);
     const row = result[0][0];
     let item = null;
     if (row) {
@@ -423,7 +422,7 @@ export default class MySQLTable extends Table {
   async deleteItems(queryName) {
     // WIP
     const sql = `DELETE FROM ${this.name} ${this.doWhereQuery(queryName)};`;
-    // console.log("sql=", sql);
+    // logger.info("sql=", sql);
     await this.database.query(sql);
     // TODO reorder if necessary
     return true;
@@ -513,7 +512,7 @@ export default class MySQLTable extends Table {
 
   /* eslint-disable no-await-in-loop */
   async execute(sql, fields = null) {
-    // console.log("execute");
+    // logger.info("execute");
     this.sql = sql;
     this.fields = fields;
     let result = null;
@@ -524,22 +523,21 @@ export default class MySQLTable extends Table {
       while (run) {
         try {
           run = false;
-          result = await this.database
-          .execute(sql, fields);
+          result = await this.database.execute(sql, fields);
         } catch (e) {
-          // console.log(e);
+          // logger.info(e);
           error = e;
           run = true;
         }
-        // console.log("run=", run);
+        // logger.info("run=", run);
         if (run) {
           await this.database.restartConnection();
           MySQLTable.pause(300 * i);
           i += 1;
           if (i > 4) {
             run = false;
-            console.log(error);
-            console.log(this.sql);
+            logger.info(error);
+            logger.info(this.sql);
             result = null;
           }
         }

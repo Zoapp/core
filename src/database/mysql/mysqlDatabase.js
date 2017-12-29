@@ -19,7 +19,9 @@ export default class MySQLDatabase extends Database {
     descriptor,
     parent,
   }) {
-    super({ name, descriptorFile, descriptor, parent });
+    super({
+      name, descriptorFile, descriptor, parent,
+    });
     this.datatype = "mysql";
     this.config = config || {};
     this.host = host;
@@ -61,7 +63,7 @@ export default class MySQLDatabase extends Database {
     new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         clearTimeout(timer);
-        // console.log("reconnect ", delay);
+        // logger.info("reconnect ", delay);
         that.createConnection(conf).then(() => {
           that.connecting = false;
           resolve();
@@ -75,11 +77,11 @@ export default class MySQLDatabase extends Database {
     this.connection = await mysql.createConnection(conf);
     this.connection.connect((error) => {
       if (error) {
-        that.close().then(() => { console.log("MySQLDatabase connection closed"); });
+        that.close().then(() => { logger.info("MySQLDatabase connection closed"); });
       }
     });
     this.connection.on("error", () => {
-      that.close().then(() => { console.log("MySQLDatabase connection closed"); });
+      that.close().then(() => { logger.info("MySQLDatabase connection closed"); });
     });
     return this.connection;
   }
@@ -89,26 +91,26 @@ export default class MySQLDatabase extends Database {
     try {
       this.connection = await mysql.createConnection(conf);
     } catch (e) {
-      console.log("catch error when connecting to MySQLDatabase:", e.code);
+      logger.info("catch error when connecting to MySQLDatabase:", e.code);
       this.reconnect(conf, this.delay || 5000);
       return null;
     }
     this.connection.connect((error) => {
       if (error) {
-        console.log("error when connecting to MySQLDatabase:", error.code);
+        logger.info("error when connecting to MySQLDatabase:", error.code);
         // that.reconnect().then().catch( process.exit(1));
-        that.close().then(() => { console.log("MySQLDatabase connection closed"); });
+        that.close().then(() => { logger.info("MySQLDatabase connection closed"); });
       }
     });
     this.connection.on("error", (error) => {
-      console.log("MySQLDatabase error=", error.code);
+      logger.info("MySQLDatabase error=", error.code);
       /* if (error.code === "PROTOCOL_CONNECTION_LOST") {
         that.reconnect().then().catch( process.exit());
       } else {
         throw error;
         // process.exit(1);
-      }*/
-      that.close().then(() => { console.log("MySQLDatabase connection closed"); });
+      } */
+      that.close().then(() => { logger.info("MySQLDatabase connection closed"); });
     });
     return this.connection;
   }
@@ -121,7 +123,7 @@ export default class MySQLDatabase extends Database {
       try {
         this.connection = await this.createFirstConnection(this.conf);
       } catch (e) {
-        console.log("need to create database");
+        logger.info("need to create database");
         const cf = { ...this.conf };
         delete cf.database;
         await this.createConnection(cf);
@@ -139,11 +141,11 @@ export default class MySQLDatabase extends Database {
       this.connection = null;
       try {
         await c.end();
-        console.log("MYSQLDatabase close end");
+        logger.info("MYSQLDatabase close end");
       } catch (e) {
-        console.log("MYSQLDatabase close error");
+        logger.info("MYSQLDatabase close error");
       }
-      console.log("MYSQLDatabase closed");
+      logger.info("MYSQLDatabase closed");
     }
   }
 
@@ -178,8 +180,8 @@ export default class MySQLDatabase extends Database {
     await this.build(names);
   }
 
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-await-in-loop */
+  /* eslint-disable no-restricted-syntax */
+  /* eslint-disable no-await-in-loop */
   async build(names = this.getCollectionNameList()) {
     // build tables from descriptor collections
     if (names) {
@@ -190,8 +192,8 @@ export default class MySQLDatabase extends Database {
       }
     }
   }
-/* eslint-enable no-restricted-syntax */
-/* eslint-enable no-await-in-loop */
+  /* eslint-enable no-restricted-syntax */
+  /* eslint-enable no-await-in-loop */
 
   async openConnection() {
     if (this.parent) {
@@ -220,7 +222,7 @@ export default class MySQLDatabase extends Database {
       return this.parent.getConnection();
     }
     if (!this.connection) {
-      // console.log("MYSQLDatabase create connection");
+      // logger.info("MYSQLDatabase create connection");
       return this.createConnection(this.conf);
     }
     return this.connection;
@@ -247,14 +249,14 @@ export default class MySQLDatabase extends Database {
     return v;
   }
 
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-await-in-loop */
+  /* eslint-disable no-restricted-syntax */
+  /* eslint-disable no-await-in-loop */
   async exists() {
     const names = this.getCollectionNameList();
     let v = true;
     if (names) {
       for (const name of names) {
-        // console.log("isTableExists", name);
+        // logger.info("isTableExists", name);
         v = v && (await this.isTableExists(name));
       }
     }
@@ -265,9 +267,8 @@ export default class MySQLDatabase extends Database {
     return new MySQLTable({ database: this, name: tablename, query });
   }
 
-/* eslint-disable no-unused-vars */
-/* eslint-disable class-methods-use-this */
-
+  /* eslint-disable no-unused-vars */
+  /* eslint-disable class-methods-use-this */
   async setTable(tablename, array) {
     throw new Error("Database setTable: Need to implement it");
   }

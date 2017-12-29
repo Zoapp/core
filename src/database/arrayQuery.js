@@ -37,9 +37,9 @@ class ArrayQuery {
       const c = query.charCodeAt(i);
       const n = i < len - 1 ? query.charCodeAt(i + 1) : 0;
       const o = ArrayQuery.nextIsOperand(c, n);
-      // console.log("c=" + c + " n=" + n + " o=" + o);
+      // logger.info("c=" + c + " n=" + n + " o=" + o);
       if (prev !== null && space) {
-        // console.log("associate=", buffer);
+        // logger.info("associate=", buffer);
         if (buffer === "and" || buffer === "AND" || (c === 38 && n === 38)) {
           prev.associate = OP_AND;
           buffer = "";
@@ -58,22 +58,22 @@ class ArrayQuery {
           key = buffer;
           buffer = "";
           op = o;
-          // console.log(`operand=${op}`);
+          // logger.info(`operand=${op}`);
         } else {
-          console.log(`Syntax error : wrong operand at line ${i}`);
+          logger.info(`Syntax error : wrong operand at line ${i}`);
         }
         offset = operandsOffset[o - 1];
       } else if (ArrayQuery.isAlphaNum(c)) {
         // We got an alphanum we put it in buffer
         buffer += query.charAt(i);
         space = false;
-        // console.log(`buffer=${buffer}`);
+        // logger.info(`buffer=${buffer}`);
       } else if ((p !== 32 && c === 32) || n === 0) {
         // Space or EOF
-        // console.log("space || EOF");
-        // console.log("buffer=", buffer);
+        // logger.info("space || EOF");
+        // logger.info("buffer=", buffer);
         if (key != null && op !== OP_NONE && value === null) {
-          // console.log("value=", buffer);
+          // logger.info("value=", buffer);
           value = buffer;
           buffer = "";
         }
@@ -87,13 +87,13 @@ class ArrayQuery {
           space = false;
         }
       } else {
-        console.log(`Unknown character at line ${i} ${c}`);
+        logger.info(`Unknown character at line ${i} ${c}`);
       }
 
       if (key != null && op !== OP_NONE && (value !== null || n === 0)) {
         value = value === null ? buffer : value;
         const cmd = { key, op, value };
-        // console.log(`cmd=${JSON.stringify(cmd)}`);
+        // logger.info(`cmd=${JSON.stringify(cmd)}`);
         this.cmps.push(cmd);
         key = null;
         op = OP_NONE;
@@ -101,7 +101,7 @@ class ArrayQuery {
         prev = cmd;
         space = false;
       }
-      // console.log(`offset=${offset} i=${i} len=${len} n=${n}`);
+      // logger.info(`offset=${offset} i=${i} len=${len} n=${n}`);
       p = c;
       i += offset;
       offset = 1;
@@ -154,7 +154,7 @@ class ArrayQuery {
     let a = OP_OR;
     this.cmps.forEach((cmp) => {
       const v1 = obj[cmp.key];
-      // console.log("v1=" + v1);
+      // logger.info("v1=" + v1);
       const v2 = cmp.value;
       let r = false;
       if (v1) {
@@ -166,9 +166,9 @@ class ArrayQuery {
         r = !!(r || (v1 <= v2 && cmp.op === OP_LTE));
       }
 
-      // console.log("r=" + r);
+      // logger.info("r=" + r);
       ret = a ? r || p : r && p;
-      // console.log("ret=" + ret);
+      // logger.info("ret=" + ret);
       p = r;
       a = cmp.associate;
     });

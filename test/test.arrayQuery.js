@@ -6,6 +6,9 @@
  */
 import { assert } from "chai";
 import ArrayQuery from "../src/database/arrayQuery";
+import setupLogger from "../src/helpers/logger";
+
+setupLogger("test");
 
 describe("ArrayQuery", () => {
   it("key=value", () => {

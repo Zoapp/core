@@ -6,6 +6,9 @@
  */
 import { assert, expect } from "chai";
 import dbCreate from "../src/database";
+import setupLogger from "../src/helpers/logger";
+
+setupLogger("test");
 
 const descriptor = {
   title: "test",
@@ -115,22 +118,22 @@ describe("Database", () => {
     const table1 = database.getTable("table1");
     let queryName = "xxx";
     let where = table1.doWhereQuery(queryName);
-    // console.log(`${queryName}=>${where}`);
+    // logger.info(`${queryName}=>${where}`);
     queryName = "name=xxx";
     where = table1.doWhereQuery(queryName);
-    // console.log(`${queryName}=>${where}`);
+    // logger.info(`${queryName}=>${where}`);
     queryName = "name=xxx OR id=xxx";
     where = table1.doWhereQuery(queryName);
-    // console.log(`${queryName}=>${where}`);
+    // logger.info(`${queryName}=>${where}`);
     queryName = "name=xxx AND id=xxx";
     where = table1.doWhereQuery(queryName);
-    // console.log(`${queryName}=>${where}`);
+    // logger.info(`${queryName}=>${where}`);
     queryName = "name=null";
     where = table1.doWhereQuery(queryName);
-    // console.log(`${queryName}=>${where}`);
+    // logger.info(`${queryName}=>${where}`);
     queryName = "name=NULL AND id!=NULL";
     where = table1.doWhereQuery(queryName);
-    // console.log(`${queryName}=>${where}`);
+    // logger.info(`${queryName}=>${where}`);
   });
 
   it("set/get Items table MySQL database", async () => {
@@ -140,10 +143,10 @@ describe("Database", () => {
     // Check if exist
     const v = await database.exists();
     assert.isTrue(v, "Database exists");
-    // console.log("ok we go");
+    // logger.info("ok we go");
 
     const table1 = database.getTable("table1");
-    // console.log("ok we set item");
+    // logger.info("ok we set item");
     await table1.setItem(null, {
       id: "xxx",
       name: "test1",
@@ -156,9 +159,9 @@ describe("Database", () => {
       map: { dist: 0, len: 1 },
       list: ["test1", "test2", "test3"],
     });
-    // console.log("ok we set another item");
+    // logger.info("ok we set another item");
     await table1.setItem("xxx", { id: "xxx", name: "test2" });
     const item = await table1.getItem("xxx");
-    // console.log("item=", JSON.stringify(item));
+    // logger.info("item=", JSON.stringify(item));
   });
 });

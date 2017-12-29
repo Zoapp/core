@@ -7,7 +7,6 @@
 import crypto from "crypto";
 
 export default class StringTools {
-
   static hashPassword(password) {
     const sha1sum = crypto.createHash("sha1");
     sha1sum.update(password);

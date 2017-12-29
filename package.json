@@ -1,12 +1,12 @@
 {
   "name": "zoapp-core",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Javascript ES7 helper/database framework to develop modern backend services using NodeJS",
   "author": "Mik BRY <mik@zoapp.com>",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "clean-dist": "rm -r -f dist && mkdir dist",    
+    "clean-dist": "rm -r -f dist && mkdir dist",
     "start:dev": "nodemon -w src --exec \"babel-node src\"",
     "build:dev": "babel src -s -D -d dist",
     "start:prod": "node dist",
@@ -33,7 +33,8 @@
     "node": ">=8.5.0"
   },
   "dependencies": {
-    "mysql2": "^1.5.1"
+    "mysql2": "^1.5.1",
+    "winston": "2.4.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

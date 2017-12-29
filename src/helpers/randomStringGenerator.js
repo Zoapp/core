@@ -32,7 +32,7 @@ export default class RandomStringGenerator {
      * @return string
      */
   generate(length) {
-    // console.log("[");
+    // logger.info("[");
     let token = "";
 
     for (let i = 0; i < length; i += 1) {
@@ -41,9 +41,9 @@ export default class RandomStringGenerator {
         this.alphabet.length,
       );
       token += this.alphabet.charAt(randomKey);
-      // console.log(i + " : " + token + " randomkey" + randomKey);
+      // logger.info(i + " : " + token + " randomkey" + randomKey);
     }
-    // console.log("]");
+    // logger.info("]");
     return token;
   }
 

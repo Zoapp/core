@@ -13,9 +13,9 @@ export default class Password {
     let strength = 0;
     if (StringTools.stringIsEmpty(password)) {
       const regex = [
-        "[A-Z]",       // Uppercase Alphabet.
-        "[a-z]",       // Lowercase Alphabet.
-        "[0-9]",       // Digit.
+        "[A-Z]", // Uppercase Alphabet.
+        "[a-z]", // Lowercase Alphabet.
+        "[0-9]", // Digit.
         "[$@$!%*#?&]", // Special Character.
       ];
       regex.forEach((reg) => {
@@ -45,5 +45,4 @@ export default class Password {
     }
     return hash;
   }
-
 }
