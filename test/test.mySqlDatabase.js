@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import { assert, expect } from "chai";
+import { assert } from "chai";
 import dbCreate from "../src/database";
 import setupLogger from "../src/helpers/logger";
 
@@ -118,22 +118,22 @@ describe("Database", () => {
     const table1 = database.getTable("table1");
     let queryName = "xxx";
     let where = table1.doWhereQuery(queryName);
-    // logger.info(`${queryName}=>${where}`);
+    logger.info(`${queryName}=>${where}`);
     queryName = "name=xxx";
     where = table1.doWhereQuery(queryName);
-    // logger.info(`${queryName}=>${where}`);
+    logger.info(`${queryName}=>${where}`);
     queryName = "name=xxx OR id=xxx";
     where = table1.doWhereQuery(queryName);
-    // logger.info(`${queryName}=>${where}`);
+    logger.info(`${queryName}=>${where}`);
     queryName = "name=xxx AND id=xxx";
     where = table1.doWhereQuery(queryName);
-    // logger.info(`${queryName}=>${where}`);
+    logger.info(`${queryName}=>${where}`);
     queryName = "name=null";
     where = table1.doWhereQuery(queryName);
-    // logger.info(`${queryName}=>${where}`);
+    logger.info(`${queryName}=>${where}`);
     queryName = "name=NULL AND id!=NULL";
     where = table1.doWhereQuery(queryName);
-    // logger.info(`${queryName}=>${where}`);
+    logger.info(`${queryName}=>${where}`);
   });
 
   it("set/get Items table MySQL database", async () => {
@@ -162,6 +162,6 @@ describe("Database", () => {
     // logger.info("ok we set another item");
     await table1.setItem("xxx", { id: "xxx", name: "test2" });
     const item = await table1.getItem("xxx");
-    // logger.info("item=", JSON.stringify(item));
+    logger.info("item=", JSON.stringify(item));
   });
 });
