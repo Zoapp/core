@@ -15,7 +15,8 @@ import memDatabase from "./memory";
  * @param {string} .user - the username to access database
  * @param {string} .password - the password to access database
  * @param {string} .descriptorFile - database schema file in json
- * @param {object} .descriptor - instead of descriptorFile you could send a descriptor object directly
+ * @param {object} .descriptor - instead of descriptorFile you
+ *                  could send a descriptor object directly
  * @param {object} .parent - Parent's database
  * @return {object} db - The database created
  */
