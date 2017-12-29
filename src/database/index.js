@@ -8,6 +8,17 @@ import mySQLDatabase from "./mysql";
 import fileDatabase from "./file";
 import memDatabase from "./memory";
 
+/**
+ * @param {string} .datatype Type of data : "mysql" | "file" | "mem"
+ * @param {string} .host host url | ip
+ * @param {string} .filename - used for file database
+ * @param {string} .user - the username to access database
+ * @param {string} .password - the password to access database
+ * @param {string} .descriptorFile - database schema file in json
+ * @param {object} .descriptor - instead of descriptorFile you could send a descriptor object directly
+ * @param {object} .parent - Parent's database
+ * @return {object} db - The database created
+ */
 export default ({
   datatype,
   host,
