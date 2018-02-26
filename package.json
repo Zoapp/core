@@ -7,16 +7,15 @@
   "main": "index.js",
   "scripts": {
     "clean-dist": "rm -r -f dist && mkdir dist",
-    "dev": "yarn build:dev && yarn start:dev",
+    "compile": "yarn clean-dist && babel src -s -D -d dist && cp -f ./package.json ./dist/package.json && cp -f ./LICENSE ./dist/LICENSE && cp -f ./README.md ./dist/README.md",
+    "compile:dev": "babel src -s -D -d dist",
+    "dev": "yarn compile:dev && yarn start:dev",
+    "distribute": "yarn willPublish && npm publish ./dist",
+    "lint": "eslint src",
     "start:dev": "nodemon -w src --exec \"babel-node src\"",
-    "build:dev": "babel src -s -D -d dist",
-    "start:prod": "node dist",
-    "build:prod": "yarn clean-dist && babel src -s -D -d dist && cp -f ./package.json ./dist/package.json && cp -f ./LICENSE ./dist/LICENSE && cp -f ./README.md ./dist/README.md",
-    "lint:dev": "eslint src --rule 'no-console: off'",
-    "lint:prod": "eslint src",
+    "start": "node dist",
     "test": "jest",
-    "willPublish": "yarn run lint:prod && yarn run test && yarn run build:prod",
-    "distribute": "yarn willPublish && npm publish ./dist"
+    "willPublish": "yarn run lint && yarn run test && yarn run compile"
   },
   "repository": {
     "type": "git",
