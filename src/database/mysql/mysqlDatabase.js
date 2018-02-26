@@ -242,9 +242,9 @@ export default class MySQLDatabase extends Database {
 
       return con.query(sql);
     } catch (e) {
-      logger.error("error in query:", e.message, { query: sql });
+      logger.log("error", "error in query: %s", e.message, { query: sql });
 
-      throw new Error(e);
+      return null;
     }
   }
 
@@ -258,9 +258,9 @@ export default class MySQLDatabase extends Database {
 
       return con.execute(sql, fields);
     } catch (e) {
-      logger.error("error in execute:", e.message, { query: sql, fields });
+      logger.log("error", "error in execute: %s", e.message, { query: sql, fields });
 
-      throw new Error(e);
+      return null;
     }
   }
 
