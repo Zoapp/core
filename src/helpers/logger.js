@@ -15,6 +15,7 @@ export default (env = "", dirname = "", filename = "app.log") => {
     });
     break;
   case "test":
+    break;
   default:
     logger.add(winston.transports.Console, {
       colorize: true,

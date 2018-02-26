@@ -165,30 +165,20 @@ describe("Database", () => {
   });
 
   describe("query()", () => {
-    it("throws an error when there is no connection available", async () => {
-      expect.assertions(1);
-
+    it("handles error", async () => {
       const db = dbCreate({ ...dbConfig, user: "unknown" });
 
-      try {
-        await db.query("");
-      } catch (e) {
-        expect(e.message).toMatch("no connection available");
-      }
+      const res = await db.query("");
+      expect(res).toBe(null);
     });
   });
 
   describe("execute()", () => {
-    it("throws an error when there is no connection available", async () => {
-      expect.assertions(1);
-
+    it("handles error", async () => {
       const db = dbCreate({ ...dbConfig, user: "unknown" });
 
-      try {
-        await db.execute("");
-      } catch (e) {
-        expect(e.message).toMatch("no connection available");
-      }
+      const res = await db.execute("");
+      expect(res).toBe(null);
     });
   });
 });
