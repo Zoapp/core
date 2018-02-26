@@ -163,4 +163,32 @@ describe("Database", () => {
     const item = await table1.getItem("xxx");
     logger.info("item=", JSON.stringify(item));
   });
+
+  describe("query()", () => {
+    it("throws an error when there is no connection available", async () => {
+      expect.assertions(1);
+
+      const db = dbCreate({ ...dbConfig, user: "unknown" });
+
+      try {
+        await db.query("");
+      } catch (e) {
+        expect(e.message).toMatch("no connection available");
+      }
+    });
+  });
+
+  describe("execute()", () => {
+    it("throws an error when there is no connection available", async () => {
+      expect.assertions(1);
+
+      const db = dbCreate({ ...dbConfig, user: "unknown" });
+
+      try {
+        await db.execute("");
+      } catch (e) {
+        expect(e.message).toMatch("no connection available");
+      }
+    });
+  });
 });
