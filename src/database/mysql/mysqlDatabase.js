@@ -91,10 +91,12 @@ export default class MySQLDatabase extends Database {
     try {
       this.connection = await mysql.createConnection(conf);
     } catch (e) {
-      logger.info("catch error when connecting to MySQLDatabase:", e.code);
+      logger.error("error while connecting to MySQLDatabase:", e.code);
       this.reconnect(conf, this.delay || 5000);
+
       return null;
     }
+
     this.connection.connect((error) => {
       if (error) {
         logger.info("error when connecting to MySQLDatabase:", error.code);
@@ -102,6 +104,7 @@ export default class MySQLDatabase extends Database {
         that.close().then(() => { logger.info("MySQLDatabase connection closed"); });
       }
     });
+
     this.connection.on("error", (error) => {
       logger.info("MySQLDatabase error=", error.code);
       /* if (error.code === "PROTOCOL_CONNECTION_LOST") {
@@ -112,6 +115,7 @@ export default class MySQLDatabase extends Database {
       } */
       that.close().then(() => { logger.info("MySQLDatabase connection closed"); });
     });
+
     return this.connection;
   }
 
@@ -217,25 +221,47 @@ export default class MySQLDatabase extends Database {
   }
 
   async getConnection() {
-    // Check if connection is closed
     if (this.parent) {
       return this.parent.getConnection();
     }
+
     if (!this.connection) {
-      // logger.info("MYSQLDatabase create connection");
       return this.createConnection(this.conf);
     }
+
     return this.connection;
   }
 
   async query(sql) {
-    const con = await this.getConnection();
-    return con.query(sql);
+    try {
+      const con = await this.getConnection();
+
+      if (!con) {
+        throw new Error("no connection available");
+      }
+
+      return con.query(sql);
+    } catch (e) {
+      logger.error("error in query:", e.message, { query: sql });
+
+      throw new Error(e);
+    }
   }
 
   async execute(sql, fields) {
-    const con = await this.getConnection();
-    return con.execute(sql, fields);
+    try {
+      const con = await this.getConnection();
+
+      if (!con) {
+        throw new Error("no connection available");
+      }
+
+      return con.execute(sql, fields);
+    } catch (e) {
+      logger.error("error in execute:", e.message, { query: sql, fields });
+
+      throw new Error(e);
+    }
   }
 
   async isTableExists(tableName) {
