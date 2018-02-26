@@ -4,7 +4,6 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import { assert } from "chai";
 import dbCreate from "../src/database";
 import setupLogger from "../src/helpers/logger";
 
@@ -86,7 +85,7 @@ const dbConfig = {
 };
 
 describe("Database", () => {
-  it("Open/Create/Delete MySQL database", async () => {
+  test("Open/Create/Delete MySQL database", async () => {
     const database = dbCreate(dbConfig);
     // Load it
     await database.load();
@@ -94,26 +93,26 @@ describe("Database", () => {
     await database.delete();
   });
 
-  it("Open with descriptor/Create/Reset table MySQL database", async () => {
+  test("Open with descriptor/Create/Reset table MySQL database", async () => {
     const database = dbCreate({ descriptor, ...dbConfig });
     // Reset it
     await database.reset();
     // Check if exist
     const v = await database.exists();
-    assert.isTrue(v, "Database exists");
+    expect(v).toBe(true);
 
     const table1 = database.getTable("table1");
     const size = await table1.size();
-    assert.isTrue(size === 0, "Database table1 is empty");
+    expect(size === 0).toBe(true);
   });
 
-  it("Convert query to SQL syntax database", async () => {
+  test("Convert query to SQL syntax database", async () => {
     const database = dbCreate({ descriptor, ...dbConfig });
     // Reset it
     await database.reset();
     // Check if exist
     const v = await database.exists();
-    assert.isTrue(v, "Database exists");
+    expect(v).toBe(true);
 
     const table1 = database.getTable("table1");
     let queryName = "xxx";
@@ -136,13 +135,13 @@ describe("Database", () => {
     logger.info(`${queryName}=>${where}`);
   });
 
-  it("set/get Items table MySQL database", async () => {
+  test("set/get Items table MySQL database", async () => {
     const database = dbCreate({ descriptor, ...dbConfig });
     // Reset it
     await database.reset();
     // Check if exist
     const v = await database.exists();
-    assert.isTrue(v, "Database exists");
+    expect(v).toBe(true);
     // logger.info("ok we go");
 
     const table1 = database.getTable("table1");
