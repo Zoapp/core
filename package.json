@@ -1,6 +1,6 @@
 {
   "name": "zoapp-core",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Javascript ES7 helper/database framework to develop modern backend services using NodeJS",
   "author": "Mik BRY <mik@zoapp.com>",
   "license": "MIT",
