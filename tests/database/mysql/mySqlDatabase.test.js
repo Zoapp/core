@@ -5,11 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 import dbCreate from "zoapp-core/database";
-import setupLogger from "zoapp-core/helpers/logger";
 
 import { descriptor, dbConfig } from "../../test-config";
-
-setupLogger("test");
 
 describe("database/mysql/mysqlDatabase", () => {
   test("Open/Create/Delete MySQL database", async () => {

@@ -5,9 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 import ArrayQuery from "zoapp-core/database/arrayQuery";
-import setupLogger from "zoapp-core/helpers/logger";
-
-setupLogger("test");
 
 describe("database/arrayQuery", () => {
   test("key=value", () => {

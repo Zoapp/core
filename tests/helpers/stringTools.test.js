@@ -6,9 +6,6 @@
  */
 import RandomStringGenerator from "zoapp-core/helpers/randomStringGenerator";
 import StringTools from "zoapp-core/helpers/stringTools";
-import setupLogger from "zoapp-core/helpers/logger";
-
-setupLogger("test");
 
 describe("helpers/stringTools", () => {
   test("generate RandomStringGenerator generate", () => {
