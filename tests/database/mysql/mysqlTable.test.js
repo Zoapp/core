@@ -4,7 +4,7 @@ import { descriptor, dbConfig } from "../../test-config";
 
 
 describe("database/mysql/mysqlTable", () => {
-  it("returns Date objects for datetime/timestamp fields", async () => {
+  it("returns unix time for datetime/timestamp fields", async () => {
     const database = dbCreate({ descriptor, ...dbConfig });
     await database.reset();
 
@@ -30,7 +30,7 @@ describe("database/mysql/mysqlTable", () => {
     });
     const item = await table1.getItem("xxx");
 
-    expect(item.creation_date).toEqual(date);
-    expect(item.timestamp).toEqual(new Date(ts));
+    expect(item.creation_date).toEqual(date.getTime());
+    expect(item.timestamp).toEqual(ts);
   });
 });
