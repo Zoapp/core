@@ -137,31 +137,39 @@ describe("Database", () => {
 
   test("set/get Items table MySQL database", async () => {
     const database = dbCreate({ descriptor, ...dbConfig });
-    // Reset it
     await database.reset();
-    // Check if exist
+
+    // check if exists
     const v = await database.exists();
     expect(v).toBe(true);
-    // logger.info("ok we go");
 
     const table1 = database.getTable("table1");
-    // logger.info("ok we set item");
+
+    const date = new Date();
+    const ts = Date.now();
+
     await table1.setItem(null, {
       id: "xxx",
       name: "test1",
-      creation_date: Date.now(),
-      timestamp: Date.now(),
+      creation_date: date,
+      timestamp: ts,
       value: 123,
       flag: true,
       refId: "yyy",
       obj: { sub: "sub", text: "text" },
       map: { dist: 0, len: 1 },
       list: ["test1", "test2", "test3"],
-    });
-    // logger.info("ok we set another item");
+    })
+
+    let item = await table1.getItem("xxx");
+    expect(item.name).toEqual("test1");
+    // test date manipulations
+    expect(item.creation_date).toEqual(date);
+    expect(item.timestamp).toEqual(new Date(ts));
+
     await table1.setItem("xxx", { id: "xxx", name: "test2" });
-    const item = await table1.getItem("xxx");
-    logger.info("item=", JSON.stringify(item));
+    item = await table1.getItem("xxx");
+    expect(item.name).toEqual("test2");
   });
 
   describe("query()", () => {

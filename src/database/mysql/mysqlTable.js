@@ -24,9 +24,7 @@ export default class MySQLTable extends Table {
     const query = `SHOW TABLES FROM ${this.database.dbname} LIKE '${this.name}';`;
 
     let v = false;
-    // logger.info("exist ?", this.name);
     const [rows] = await this.database.query(query);
-    // logger.info("exist find=", JSON.stringify(rows));
     if (Array.isArray(rows) && rows.length > 0) {
       v = true;
     }
@@ -147,6 +145,7 @@ export default class MySQLTable extends Table {
       const value = row[key];
       // logger.info("rebind key=", key, value);
       const { type } = properties[key];
+
       if (value) {
         if (key === "id") {
           item.id = row.idx;
@@ -164,10 +163,9 @@ export default class MySQLTable extends Table {
         } else if (type === "boolean") {
           item[key] = Boolean(value);
         } else if (type === "#DateTime") {
-          item[key] = Date.parse(`${value} UTC`);
+          item[key] = new Date(`${value} UTC`);
         } else if (type === "#Timestamp") {
-          // TODO
-          item[key] = Number(value);
+          item[key] = new Date(value);
         } else if (type === "#Link") {
           // TODO
           item[key] = value;
