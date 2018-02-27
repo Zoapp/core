@@ -163,9 +163,9 @@ export default class MySQLTable extends Table {
         } else if (type === "boolean") {
           item[key] = Boolean(value);
         } else if (type === "#DateTime") {
-          item[key] = new Date(`${value} UTC`);
+          item[key] = Date.parse(`${value} UTC`);
         } else if (type === "#Timestamp") {
-          item[key] = new Date(value);
+          item[key] = new Date(value).getTime();
         } else if (type === "#Link") {
           // TODO
           item[key] = value;
