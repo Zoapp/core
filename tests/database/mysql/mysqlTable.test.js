@@ -27,7 +27,7 @@ describe("database/mysql/mysqlTable", () => {
       obj: { sub: "sub", text: "text" },
       map: { dist: 0, len: 1 },
       list: ["test1", "test2", "test3"],
-    })
+    });
     const item = await table1.getItem("xxx");
 
     expect(item.creation_date).toEqual(date);
