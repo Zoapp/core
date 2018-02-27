@@ -4,13 +4,13 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import RandomStringGenerator from "../src/helpers/randomStringGenerator";
-import StringTools from "../src/helpers/stringTools";
-import setupLogger from "../src/helpers/logger";
+import RandomStringGenerator from "zoapp-core/helpers/randomStringGenerator";
+import StringTools from "zoapp-core/helpers/stringTools";
+import setupLogger from "zoapp-core/helpers/logger";
 
 setupLogger("test");
 
-describe("Helpers", () => {
+describe("helpers/stringTools", () => {
   test("generate RandomStringGenerator generate", () => {
     const rand = new RandomStringGenerator();
     let len = 0;

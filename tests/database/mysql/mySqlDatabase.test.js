@@ -4,87 +4,14 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import dbCreate from "../src/database";
-import setupLogger from "../src/helpers/logger";
+import dbCreate from "zoapp-core/database";
+import setupLogger from "zoapp-core/helpers/logger";
+
+import { descriptor, dbConfig } from "../../test-config";
 
 setupLogger("test");
 
-const descriptor = {
-  title: "test",
-  description: "JSON schema for Zoapp-Core test",
-  $schema: "http://json-schema.org/draft-04/schema#",
-  type: "object",
-  definitions: {
-    Id: {
-      type: "string",
-    },
-    DateTime: {
-      type: "string",
-    },
-    Timestamp: {
-      type: "integer",
-    },
-    Link: {
-      type: "string",
-    },
-    Map: {
-      type: "object",
-    },
-    Order: {
-      type: "integer",
-    },
-  },
-  properties: {
-    table1: {
-      title: "Table1",
-      properties: {
-        id: {
-          type: "#Id",
-        },
-        name: {
-          type: "string",
-          size: 50,
-        },
-        creation_date: {
-          type: "#DateTime",
-        },
-        timestamp: {
-          type: "#Timestamp",
-        },
-        value: {
-          type: "integer",
-        },
-        flag: {
-          type: "boolean",
-        },
-        obj: {
-          type: "object",
-        },
-        map: {
-          type: "#Map",
-        },
-        list: {
-          type: "array",
-        },
-        refId: {
-          type: "#Link",
-        },
-        order: {
-          type: "#Order",
-        },
-      },
-    },
-  },
-};
-
-const dbConfig = {
-  datatype: "mysql",
-  host: "localhost",
-  name: "test",
-  user: "root",
-};
-
-describe("Database", () => {
+describe("database/mysql/mysqlDatabase", () => {
   test("Open/Create/Delete MySQL database", async () => {
     const database = dbCreate(dbConfig);
     // Load it
@@ -163,9 +90,6 @@ describe("Database", () => {
 
     let item = await table1.getItem("xxx");
     expect(item.name).toEqual("test1");
-    // test date manipulations
-    expect(item.creation_date).toEqual(date);
-    expect(item.timestamp).toEqual(new Date(ts));
 
     await table1.setItem("xxx", { id: "xxx", name: "test2" });
     item = await table1.getItem("xxx");

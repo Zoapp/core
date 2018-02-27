@@ -48,5 +48,10 @@
     "eslint-plugin-import": "2.8.0",
     "jest": "^22.4.2",
     "nodemon": "^1.13.1"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "zoapp-core/(.*)": "<rootDir>/src/$1"
+    }
   }
 }

@@ -4,12 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import ArrayQuery from "../src/database/arrayQuery";
-import setupLogger from "../src/helpers/logger";
+import ArrayQuery from "zoapp-core/database/arrayQuery";
+import setupLogger from "zoapp-core/helpers/logger";
 
 setupLogger("test");
 
-describe("ArrayQuery", () => {
+describe("database/arrayQuery", () => {
   test("key=value", () => {
     const query = new ArrayQuery("key=value");
     let result = query.execute({ key: "value" });
@@ -19,6 +19,7 @@ describe("ArrayQuery", () => {
     result = query.execute({ notkey: "value" });
     expect(result).toBe(false);
   });
+
   test("key!=value", () => {
     const query = new ArrayQuery("key!=value");
     let result = query.execute({ key: "value" });
