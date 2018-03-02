@@ -21,7 +21,9 @@ export default class MySQLTable extends Table {
   }
 
   async exists() {
-    const query = `SHOW TABLES FROM ${this.database.dbname} LIKE '${this.name}';`;
+    const query = `SHOW TABLES FROM ${this.database.dbname} LIKE '${
+      this.name
+    }';`;
 
     let v = false;
     const [rows] = await this.database.query(query);
@@ -44,8 +46,11 @@ export default class MySQLTable extends Table {
     // logger.info("properties", properties);
     const propNames = await Object.keys(properties);
     // logger.info("propNames", propNames);
-    let sql = `CREATE TABLE IF NOT EXISTS ${MySQLDatabase.buildDbName(this.name)}`;
-    sql += " (`id` binary(16) NOT NULL, id_text varchar(36) generated always as (hex(id)) virtual, ";
+    let sql = `CREATE TABLE IF NOT EXISTS ${MySQLDatabase.buildDbName(
+      this.name,
+    )}`;
+    sql +=
+      " (`id` binary(16) NOT NULL, id_text varchar(36) generated always as (hex(id)) virtual, ";
     propNames.forEach((n) => {
       const prop = properties[n];
       const vn = MySQLDatabase.buildDbName(n);
@@ -122,11 +127,17 @@ export default class MySQLTable extends Table {
           }
           // TODO check type of value from descriptor
           let op = ArrayQuery.operandString(cmp.op);
-          if (cmp.value === "null" || cmp.value === "NULL" || cmp.value === "undefined") {
+          if (
+            cmp.value === "null" ||
+            cmp.value === "NULL" ||
+            cmp.value === "undefined"
+          ) {
             op = op === "=" ? "IS" : "IS NOT";
             where += `\`${k}\` ${op} NULL`;
           } else {
-            where += `\`${k}\`${ArrayQuery.operandString(cmp.op)}'${cmp.value}'`;
+            where += `\`${k}\`${ArrayQuery.operandString(cmp.op)}'${
+              cmp.value
+            }'`;
           }
           prev = cmp;
         });
@@ -209,7 +220,14 @@ export default class MySQLTable extends Table {
     return this.database.getCollectionDescription(this.name).properties;
   }
 
-  buildStatement(fields, keys, item, properties = this.getProperties(), size = 0, nullify = false) {
+  buildStatement(
+    fields,
+    keys,
+    item,
+    properties = this.getProperties(),
+    size = 0,
+    nullify = false,
+  ) {
     let extras = null;
     if (properties.extras) {
       extras = {};
@@ -240,10 +258,28 @@ export default class MySQLTable extends Table {
           } else if (type === "#DateTime") {
             const date = new Date(value);
             // Y-m-d H:i:s.u
-            value = `${date.getUTCFullYear()}-${MySQLTable.padNumber(date.getUTCMonth() + 1, 2)}-${MySQLTable.padNumber(date.getUTCDate(), 2)} ${MySQLTable.padNumber(date.getUTCHours(), 2)}:${MySQLTable.padNumber(date.getUTCMinutes(), 2)}:${MySQLTable.padNumber(date.getUTCSeconds(), 2)}.${MySQLTable.padNumber(date.getUTCMilliseconds(), 3)}`;
+            value = `${date.getUTCFullYear()}-${MySQLTable.padNumber(
+              date.getUTCMonth() + 1,
+              2,
+            )}-${MySQLTable.padNumber(
+              date.getUTCDate(),
+              2,
+            )} ${MySQLTable.padNumber(
+              date.getUTCHours(),
+              2,
+            )}:${MySQLTable.padNumber(
+              date.getUTCMinutes(),
+              2,
+            )}:${MySQLTable.padNumber(
+              date.getUTCSeconds(),
+              2,
+            )}.${MySQLTable.padNumber(date.getUTCMilliseconds(), 3)}`;
           } else if (type === "#Map" || type === "array" || type === "object") {
             // logger.info("typeof=", (typeof value));
-            if (value && (Array.isArray(value) || (!(typeof value === "string")))) {
+            if (
+              value &&
+              (Array.isArray(value) || !(typeof value === "string"))
+            ) {
               value = JSON.stringify(value);
             } /* else {
               logger.info("array error", value);
@@ -301,7 +337,6 @@ export default class MySQLTable extends Table {
   }
   /* eslint-enable no-restricted-syntax */
   /* eslint-enable no-await-in-loop */
-
 
   async updateItems(items) {
     const properties = this.getProperties();
@@ -403,7 +438,9 @@ export default class MySQLTable extends Table {
 
   async getItem(queryName) {
     // WIP
-    const sql = `SELECT * FROM \`${this.name}\`${this.doWhereQuery(queryName)};`;
+    const sql = `SELECT * FROM \`${this.name}\`${this.doWhereQuery(
+      queryName,
+    )};`;
     // logger.info("sql=", sql);
     const result = await this.database.query(sql);
     // logger.info("getItem result:", result);
@@ -448,7 +485,10 @@ export default class MySQLTable extends Table {
         return false;
       });
       if (!desc.sorted) {
-        throw new Error("Can't sort this collection sorted property not available", this.name);
+        throw new Error(
+          "Can't sort this collection sorted property not available",
+          this.name,
+        );
       }
     }
     const items = await this.getItems(query);
@@ -505,7 +545,9 @@ export default class MySQLTable extends Table {
 
   static pause(milliseconds) {
     const dt = new Date();
-    while ((new Date()) - dt <= milliseconds) { /* Do nothing */ }
+    while (new Date() - dt <= milliseconds) {
+      /* Do nothing */
+    }
   }
 
   /* eslint-disable no-await-in-loop */
@@ -547,7 +589,9 @@ export default class MySQLTable extends Table {
 
   async size(query = null) {
     let s = 0;
-    const sql = `SELECT COUNT(id) FROM ${MySQLDatabase.buildDbName(this.name)} ${this.doWhereQuery(query)};`;
+    const sql = `SELECT COUNT(id) FROM ${MySQLDatabase.buildDbName(
+      this.name,
+    )} ${this.doWhereQuery(query)};`;
     // TODO size with query
     const [result] = await this.database.query(sql);
     s = Number(Object.keys(result)[0]);

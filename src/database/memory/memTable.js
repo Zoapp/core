@@ -15,7 +15,7 @@ export default class MemTable extends Table {
     if (this.database.cache && this.database.cache[this.name]) {
       if (this.query) {
         const array = this.getItems(this.query);
-        array.forEach(item => callback(item));
+        array.forEach((item) => callback(item));
       } else {
         const table = this.database.cache[this.name];
         const keys = Object.keys(table);
@@ -56,9 +56,9 @@ export default class MemTable extends Table {
     if (table) {
       if (queryName) {
         const query = this.database.buildQuery(queryName);
-        array = Object.keys(table).filter(k => query.execute(table[k]));
+        array = Object.keys(table).filter((k) => query.execute(table[k]));
       } else {
-        Object.keys(table).forEach(k => array.push(table[k]));
+        Object.keys(table).forEach((k) => array.push(table[k]));
       }
     }
     return array;
@@ -71,7 +71,7 @@ export default class MemTable extends Table {
       // Build query
       const query = this.database.buildQuery(queryName);
       if (table) {
-        const res = Object.keys(table).filter(k => query.execute(table[k]));
+        const res = Object.keys(table).filter((k) => query.execute(table[k]));
         if (res.length === 1) {
           [item] = res;
         }
@@ -88,7 +88,7 @@ export default class MemTable extends Table {
       // Build query
       const query = this.database.buildQuery(queryName);
       if (table) {
-        const t = Object.keys(table).filter(k => !query.execute(table[k]));
+        const t = Object.keys(table).filter((k) => !query.execute(table[k]));
         this.database.cache[this.name] = t;
         if (!this.database.lock) {
           this.database.flush();

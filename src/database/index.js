@@ -33,20 +33,33 @@ export default ({
 }) => {
   let db = null;
   let dt = datatype;
-  if (parent && (!dt)) {
+  if (parent && !dt) {
     dt = parent.datatype;
   }
   if (dt && dt === "mysql" && name) {
     db = mySQLDatabase({
-      host, name, user, password, descriptorFile, descriptor, parent,
+      host,
+      name,
+      user,
+      password,
+      descriptorFile,
+      descriptor,
+      parent,
     });
   } else if (filename) {
     db = fileDatabase({
-      filename, name, descriptorFile, descriptor, parent,
+      filename,
+      name,
+      descriptorFile,
+      descriptor,
+      parent,
     });
   } else {
     db = memDatabase({
-      name, descriptorFile, descriptor, parent,
+      name,
+      descriptorFile,
+      descriptor,
+      parent,
     });
   }
   return db;

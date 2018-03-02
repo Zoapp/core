@@ -18,8 +18,8 @@ export default class RandomStringGenerator {
   }
 
   /**
-     * @param string alphabet
-     */
+   * @param string alphabet
+   */
   setAlphabet(alphabet) {
     if (!alphabet) {
       return;
@@ -28,9 +28,9 @@ export default class RandomStringGenerator {
   }
 
   /**
-     * @param int length
-     * @return string
-     */
+   * @param int length
+   * @return string
+   */
   generate(length) {
     // logger.info("[");
     let token = "";
@@ -48,11 +48,11 @@ export default class RandomStringGenerator {
   }
 
   /**
-     * @param int min
-     * @param int max
-     * @return int
-     * http://stackoverflow.com/questions/33609404/node-js-how-to-generate-random-numbers-in-specific-range-using-crypto-randomby
-     */
+   * @param int min
+   * @param int max
+   * @return int
+   * http://stackoverflow.com/questions/33609404/node-js-how-to-generate-random-numbers-in-specific-range-using-crypto-randomby
+   */
   static getRandomInteger(min, max) {
     const range = max - min;
 
@@ -66,7 +66,7 @@ export default class RandomStringGenerator {
       crypto.randomBytes(maxBytes).toString("hex"),
       16,
     );
-    const rnd = Math.floor(((randbytes / maxDec) * range) + min);
+    const rnd = Math.floor(randbytes / maxDec * range + min);
     return rnd;
   }
 }
