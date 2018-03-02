@@ -20,7 +20,10 @@ export default class MySQLDatabase extends Database {
     parent,
   }) {
     super({
-      name, descriptorFile, descriptor, parent,
+      name,
+      descriptorFile,
+      descriptor,
+      parent,
     });
     this.datatype = "mysql";
     this.config = config || {};
@@ -64,10 +67,15 @@ export default class MySQLDatabase extends Database {
       const timer = setTimeout(() => {
         clearTimeout(timer);
         // logger.info("reconnect ", delay);
-        that.createConnection(conf).then(() => {
-          that.connecting = false;
-          resolve();
-        }).catch(() => { reject(); });
+        that
+          .createConnection(conf)
+          .then(() => {
+            that.connecting = false;
+            resolve();
+          })
+          .catch(() => {
+            reject();
+          });
       }, delay);
     }).then();
   }
@@ -77,11 +85,15 @@ export default class MySQLDatabase extends Database {
     this.connection = await mysql.createConnection(conf);
     this.connection.connect((error) => {
       if (error) {
-        that.close().then(() => { logger.info("MySQLDatabase connection closed"); });
+        that.close().then(() => {
+          logger.info("MySQLDatabase connection closed");
+        });
       }
     });
     this.connection.on("error", () => {
-      that.close().then(() => { logger.info("MySQLDatabase connection closed"); });
+      that.close().then(() => {
+        logger.info("MySQLDatabase connection closed");
+      });
     });
     return this.connection;
   }
@@ -101,7 +113,9 @@ export default class MySQLDatabase extends Database {
       if (error) {
         logger.info("error when connecting to MySQLDatabase:", error.code);
         // that.reconnect().then().catch( process.exit(1));
-        that.close().then(() => { logger.info("MySQLDatabase connection closed"); });
+        that.close().then(() => {
+          logger.info("MySQLDatabase connection closed");
+        });
       }
     });
 
@@ -113,7 +127,9 @@ export default class MySQLDatabase extends Database {
         throw error;
         // process.exit(1);
       } */
-      that.close().then(() => { logger.info("MySQLDatabase connection closed"); });
+      that.close().then(() => {
+        logger.info("MySQLDatabase connection closed");
+      });
     });
 
     return this.connection;
@@ -140,7 +156,7 @@ export default class MySQLDatabase extends Database {
   }
 
   async close() {
-    if ((!this.parent) && this.connection) {
+    if (!this.parent && this.connection) {
       const c = this.connection;
       this.connection = null;
       try {
@@ -155,7 +171,7 @@ export default class MySQLDatabase extends Database {
 
   async delete() {
     await this.getConnection();
-    if ((!this.parent) && this.connection) {
+    if (!this.parent && this.connection) {
       await this.query(`DROP DATABASE IF EXISTS ${this.dbname}`);
       await this.close();
     }
@@ -163,7 +179,7 @@ export default class MySQLDatabase extends Database {
 
   async reset() {
     await this.getConnection();
-    if ((!this.parent) && (!this.connection)) {
+    if (!this.parent && !this.connection) {
       await this.load();
     }
     // reset all tables
@@ -258,7 +274,10 @@ export default class MySQLDatabase extends Database {
 
       return con.execute(sql, fields);
     } catch (e) {
-      logger.log("error", "error in execute: %s", e.message, { query: sql, fields });
+      logger.log("error", "error in execute: %s", e.message, {
+        query: sql,
+        fields,
+      });
 
       return null;
     }

@@ -11,4 +11,11 @@ import Password from "./helpers/password";
 import dbCreate from "./database";
 import setupLogger from "./helpers/logger";
 
-export { StringTools, FileTools, Password, RandomStringGenerator, dbCreate, setupLogger };
+export {
+  StringTools,
+  FileTools,
+  Password,
+  RandomStringGenerator,
+  dbCreate,
+  setupLogger,
+};

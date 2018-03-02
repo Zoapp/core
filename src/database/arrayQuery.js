@@ -44,7 +44,11 @@ class ArrayQuery {
           prev.associate = OP_AND;
           buffer = "";
           prev = null;
-        } else if (buffer === "or" || buffer === "OR" || (c === 124 && n === 124)) {
+        } else if (
+          buffer === "or" ||
+          buffer === "OR" ||
+          (c === 124 && n === 124)
+        ) {
           prev.associate = OP_OR;
           buffer = "";
           prev = null;
@@ -53,7 +57,10 @@ class ArrayQuery {
       if (o !== OP_NONE) {
         // We got Operand in 'o' so buffer must be key
         if (
-          prev == null && key == null && buffer.length > 0 && op === OP_NONE
+          prev == null &&
+          key == null &&
+          buffer.length > 0 &&
+          op === OP_NONE
         ) {
           key = buffer;
           buffer = "";

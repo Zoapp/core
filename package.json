@@ -45,9 +45,12 @@
     "babel-preset-env": "^1.6.1",
     "eslint": "^4.13.1",
     "eslint-config-airbnb-base": "12.1.0",
+    "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "2.8.0",
+    "eslint-plugin-prettier": "^2.6.0",
     "jest": "^22.4.2",
-    "nodemon": "^1.13.1"
+    "nodemon": "^1.13.1",
+    "prettier": "^1.11.1"
   },
   "jest": {
     "moduleNameMapper": {

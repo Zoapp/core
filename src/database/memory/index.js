@@ -6,4 +6,5 @@
  */
 import MemDatabase from "./memDatabase";
 
-export default ({ name, descriptorFile }) => new MemDatabase({ name, descriptorFile });
+export default ({ name, descriptorFile }) =>
+  new MemDatabase({ name, descriptorFile });

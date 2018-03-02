@@ -1,5 +1,8 @@
 {
-    "extends": "airbnb-base",
+    "extends": [
+        "airbnb-base",
+        "prettier"
+    ],
     "env": {
         "es6": true,
         "browser": false,
@@ -20,10 +23,10 @@
         "sourceType": "module"
     },
     "plugins": [
-        "import"
+        "import",
+        "prettier"
     ],
     "rules": {
-        "indent": [2, 2],
         "quotes": [
             "error",
             "double"
@@ -34,6 +37,10 @@
         ],
         "no-console": 1,
         "prefer-const": "error",
-        "no-var": "error"
+        "no-var": "error",
+        "prettier/prettier": ["error", {
+            "arrowParens": "always",
+            "trailingComma": "all"
+        }]
     }
 }

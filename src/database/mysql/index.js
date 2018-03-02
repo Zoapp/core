@@ -6,4 +6,4 @@
  */
 import MySQLDatabase from "./mysqlDatabase";
 
-export default params => new MySQLDatabase(params);
+export default (params) => new MySQLDatabase(params);

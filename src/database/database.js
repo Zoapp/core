@@ -13,13 +13,11 @@ import ArrayQuery from "./arrayQuery";
 
 export default class Database {
   /**
-     * Abstract Db Storage
-     *
-     * @param string url
-     */
-  constructor({
-    url, name, version, descriptorFile, descriptor, parent,
-  }) {
+   * Abstract Db Storage
+   *
+   * @param string url
+   */
+  constructor({ url, name, version, descriptorFile, descriptor, parent }) {
     let n = name;
     if (!name) {
       n = url;
@@ -57,10 +55,13 @@ export default class Database {
     let collectionNameList = null;
     // logger.info("descriptor=", this.descriptor);
     if (this.descriptor && this.descriptor.properties) {
-      collectionNameList = Object.keys(this.descriptor.properties).filter((name) => {
-        const property = this.descriptor.properties[name];
-        return (!property.nested);
-      }, this);
+      collectionNameList = Object.keys(this.descriptor.properties).filter(
+        (name) => {
+          const property = this.descriptor.properties[name];
+          return !property.nested;
+        },
+        this,
+      );
       // logger.info(JSON.stringify(collectionNameList));
     }
     return collectionNameList;
