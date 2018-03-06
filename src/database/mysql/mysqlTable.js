@@ -515,14 +515,33 @@ export default class MySQLTable extends Table {
       throw new Error("`to` parameter is larger than the number of items");
     }
 
-    const fromItem = { ...items[from - 1] };
-    const toItem = { ...items[to - 1] };
+    const isInverted = from > to;
 
-    fromItem[orderField] = to;
-    toItem[orderField] = from;
-
+    // move the selected element to its new position
+    const fromItem = { ...items[from - 1], [orderField]: to };
     this.setItem(fromItem.id, fromItem);
-    this.setItem(toItem.id, toItem);
+
+    let sequence = 1;
+    items.forEach((item, index) => {
+      // skip the selected element
+      if (index + 1 === from) {
+        return;
+      }
+
+      // update the items in the list
+      this.setItem(item.id, { ...item, [orderField]: sequence });
+      sequence += 1;
+
+      // this is needed because we already set the item at this position, it is
+      // the selected item
+      if (index + 1 === to) {
+        if (isInverted) {
+          this.setItem(item.id, { ...item, [orderField]: sequence });
+        }
+
+        sequence += 1;
+      }
+    });
 
     return true;
   }
