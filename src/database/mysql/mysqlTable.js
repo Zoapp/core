@@ -105,6 +105,7 @@ export default class MySQLTable extends Table {
     if (!queryName) {
       return "";
     }
+
     let where = whereStatement;
     if (queryName.indexOf("=") === -1) {
       where += `\`idx\`='${queryName}'`;
@@ -117,14 +118,14 @@ export default class MySQLTable extends Table {
         let prev = null;
         query.cmps.forEach((cmp) => {
           if (prev) {
-            // logger.info("associate=", prev.associate ? "OR" : "AND");
             where += prev.associate ? " OR " : " AND ";
           }
-          // logger.info("key=", cmp.key);
+
           let k = cmp.key;
           if (k === "id") {
             k = "idx";
           }
+
           // TODO check type of value from descriptor
           let op = ArrayQuery.operandString(cmp.op);
           if (
@@ -142,9 +143,9 @@ export default class MySQLTable extends Table {
           prev = cmp;
         });
         query.where = where;
-        logger.info(" where=", where);
       }
     }
+
     return where;
   }
 
