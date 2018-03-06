@@ -47,50 +47,108 @@ describe("database/mysql/mysqlTable", () => {
     });
 
     it("reorders rows", async () => {
-      ["item1", "item2", "item3"].forEach(async (item, index) => {
+      ["it-1", "it-2", "it-3", "it-4"].forEach(async (item, index) => {
         await table1.setItem(null, {
           id: item,
           name: item,
-          order: index + 1,
+          order: index + 1
         });
       });
 
       let items = await table1.getItems();
-      expect(items.map((i) => i.id)).toEqual(["item1", "item2", "item3"]);
+      expect(items.map((i) => i.id)).toEqual(["it-1", "it-2", "it-3", "it-4"]);
+      expect(items.map((i) => i.order)).toEqual([1, 2, 3, 4]);
 
+      // move first item at the third position
       try {
-        await table1.moveItem("item1", 1, 3);
+        await table1.moveItem("parameter not used", 1, 3);
       } catch (e) {
         throw e;
       }
 
       items = await table1.getItems();
-      expect(items.map((i) => i.id)).toEqual(["item3", "item2", "item1"]);
+      expect(items.map((i) => i.id)).toEqual(["it-2", "it-3", "it-1", "it-4"]);
+      expect(items.map((i) => i.order)).toEqual([1, 2, 3, 4]);
+
+      // move first item in second position
+      try {
+        await table1.moveItem("parameter not used", 1, 2);
+      } catch (e) {
+        throw e;
+      }
+
+      items = await table1.getItems();
+      expect(items.map((i) => i.id)).toEqual(["it-3", "it-2", "it-1", "it-4"]);
+      expect(items.map((i) => i.order)).toEqual([1, 2, 3, 4]);
+
+      // move third item in second position
+      try {
+        await table1.moveItem("parameter not used", 3, 2);
+      } catch (e) {
+        throw e;
+      }
+
+      items = await table1.getItems();
+      expect(items.map((i) => i.id)).toEqual(["it-3", "it-1", "it-2", "it-4"]);
+      expect(items.map((i) => i.order)).toEqual([1, 2, 3, 4]);
+
+      // move the fourth item in second position
+      try {
+        await table1.moveItem("parameter not used", 4, 2);
+      } catch (e) {
+        throw e;
+      }
+
+      items = await table1.getItems();
+      expect(items.map((i) => i.id)).toEqual(["it-3", "it-4", "it-1", "it-2"]);
+      expect(items.map((i) => i.order)).toEqual([1, 2, 3, 4]);
+
+      // move the first item in fourth position
+      try {
+        await table1.moveItem("parameter not used", 1, 4);
+      } catch (e) {
+        throw e;
+      }
+
+      items = await table1.getItems();
+      expect(items.map((i) => i.id)).toEqual(["it-4", "it-1", "it-2", "it-3"]);
+      expect(items.map((i) => i.order)).toEqual([1, 2, 3, 4]);
+
+      // move the fourth item in first position
+      try {
+        await table1.moveItem("parameter not used", 4, 1);
+      } catch (e) {
+        throw e;
+      }
+
+      items = await table1.getItems();
+      expect(items.map((i) => i.id)).toEqual(["it-3", "it-4", "it-1", "it-2"]);
+      expect(items.map((i) => i.order)).toEqual([1, 2, 3, 4]);
     });
 
     it("does nothing if `from` and `to` are equal", async () => {
-      const result = await table1.moveItem("item1", 1, 1);
+      const result = await table1.moveItem("parameter not used", 1, 1);
 
       expect(result).toBe(true);
     });
 
     it("throws an error if `from` value is less than 1", async () => {
-      await expect(table1.moveItem("item1", 0, 1)).rejects.toThrow(
-        "`from` parameter must be > 0",
+      await expect(table1.moveItem("parameter not used", 0, 1)).rejects.toThrow(
+        "`from` parameter must be > 0"
       );
     });
 
     it("throws an error when `to` value is larger than the items", async () => {
-      ["item1", "item2"].forEach(async (item, index) => {
+      ["it-1", "it-2"].forEach(async (item, index) => {
         await table1.setItem(null, {
           id: item,
           name: item,
-          order: index + 1,
+          order: index + 1
         });
       });
 
-      await expect(table1.moveItem("item1", 1, 3)).rejects.toThrow(
-        "`to` parameter is larger than the number of items",
+      await expect(table1.moveItem("parameter not used", 1, 3)).rejects.toThrow(
+        "`to` parameter is larger than the number of items"
       );
     });
   });
@@ -107,27 +165,27 @@ describe("database/mysql/mysqlTable", () => {
       // insert items in controlled-random order
       [
         {
-          name: "item3",
-          order: 2,
+          name: "it-3",
+          order: 2
         },
         {
-          name: "item2",
-          order: 1,
+          name: "it-2",
+          order: 1
         },
         {
-          name: "item1",
-          order: 3,
-        },
-      ].forEach(async (item) => {
+          name: "it-1",
+          order: 3
+        }
+      ].forEach(async item => {
         await table1.setItem(null, {
           id: item.name,
           name: item.name,
-          order: item.order,
+          order: item.order
         });
       });
 
       const items = await table1.getItems();
-      expect(items.map((i) => i.id)).toEqual(["item2", "item3", "item1"]);
+      expect(items.map((i) => i.id)).toEqual(["it-2", "it-3", "it-1"]);
     });
   });
 });
