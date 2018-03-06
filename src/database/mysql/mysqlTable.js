@@ -421,18 +421,33 @@ export default class MySQLTable extends Table {
   }
 
   async getItems(queryName = null) {
-    // WIP
-    // TODO sorting
-    const sql = `SELECT * FROM ${this.name} ${this.doWhereQuery(queryName)};`;
+    const properties = this.getDescriptionProperties();
+    const orderField = Object.keys(properties).find((property) => {
+      if (properties[property].type === "#Order") {
+        return true;
+      }
+
+      return false;
+    });
+
+    const sql = [
+      `SELECT * FROM ${this.name}`,
+      this.doWhereQuery(queryName),
+      // add ORDER BY clause if needed
+      orderField ? `ORDER BY \`${orderField}\` ASC` : "",
+    ].join(" ");
     const result = await this.database.query(sql);
+
     const array = [];
     result[0].forEach((row) => {
       let item = null;
       if (row) {
         item = this.rebind(row);
       }
+
       array.push(item);
     });
+
     return array;
   }
 
@@ -468,78 +483,46 @@ export default class MySQLTable extends Table {
     return this.deleteItems(itemname);
   }
 
-  async moveItem(itemname, fromIndex, to, query = null) {
-    if (fromIndex === to && itemname != null) {
+  async moveItem(itemname, from, to, query = null) {
+    if (from === to) {
       return true;
     }
-    const desc = this.database.getCollectionDescription(this.name);
-    const notSorted = !!desc.sorted;
-    if (notSorted) {
-      const propNames = Object.keys(desc.properties);
-      propNames.some((n) => {
-        const prop = desc.properties[n];
-        if (prop.type === "#Order") {
-          desc.sorted = n;
-          return true;
-        }
-        return false;
-      });
-      if (!desc.sorted) {
-        throw new Error(
-          "Can't sort this collection sorted property not available",
-          this.name,
-        );
-      }
+
+    if (from < 1) {
+      throw new Error("`from` parameter must be > 0");
     }
+
+    const properties = this.getDescriptionProperties();
+    const orderField = Object.keys(properties).find((property) => {
+      if (properties[property].type === "#Order") {
+        return true;
+      }
+
+      return false;
+    });
+
+    if (!orderField) {
+      throw new Error(
+        "Can't sort this collection sorted property not available",
+        this.name,
+      );
+    }
+
     const items = await this.getItems(query);
-    if (fromIndex < items.length) {
-      if (notSorted) {
-        // Reorder all
-        if (items.length > 1) {
-          let i = 0;
-          items.forEach((item) => {
-            const it = item;
-            it[desc.sorted] = i;
-            i += 1;
-          }, this);
-        }
-      }
-      return true;
+
+    if (items.length < to) {
+      throw new Error("`to` parameter is larger than the number of items");
     }
-    /*
-     This code need to be tested and optimized
-     from http://www.barattalo.it/coding/reorder-records-table/
-    let where = "";
-    if (query) {
-      where = ` AND (${this.doWhereQuery(query, "")})`;
-    }
-    // TODO check if descriptor has an #Order field if not throws an error
-    const orderfield = "order"; // remove this hack and get it from descriptor
-    if (itemname != null) {
-      const update = `UPDATE ${this.name} SET ${orderfield}=${orderfield}`;
-      let prev = "<";
-      let next = ">=";
-      if (fromIndex > to) {
-        prev = "<=";
-        next = ">";
-      }
-      this.execute(`${update}-1 WHERE ${orderfield} ${prev} '${to}'
-      AND idx<>'${itemname}'${where};`);
-      this.execute(`${update}+1 WHERE ${orderfield} ${next} '${to}'
-      AND idx<>'${itemname}'${where};`);
-      this.execute(`UPDATE ${this.name} SET ${orderfield}=${to} WHERE idx='${itemname}';`);
-    } else {
-      // Order items
-      const result = await this.execute(`SELECT ${orderfield},idx
-      FROM ${this.name} WHERE ${where}`);
-      let p = 0;
-      result.forEach((item) => {
-        p += 1;
-        this.execute(`UPDATE ${this.name} SET ${orderfield}='${p}'
-        WHERE idx= '${item.id}'`);
-      });
-    }
-    */
+
+    const fromItem = { ...items[from - 1] };
+    const toItem = { ...items[to - 1] };
+
+    fromItem[orderField] = to;
+    toItem[orderField] = from;
+
+    this.setItem(fromItem.id, fromItem);
+    this.setItem(toItem.id, toItem);
+
     return true;
   }
 
@@ -596,5 +579,11 @@ export default class MySQLTable extends Table {
     const [result] = await this.database.query(sql);
     s = Number(Object.keys(result)[0]);
     return s;
+  }
+
+  getDescriptionProperties() {
+    const description = this.database.getCollectionDescription(this.name);
+
+    return description.properties;
   }
 }

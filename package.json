@@ -14,7 +14,7 @@
     "lint": "eslint src",
     "start:dev": "nodemon -w src --exec \"babel-node src\"",
     "start": "node dist",
-    "test": "jest",
+    "test": "jest --runInBand --forceExit",
     "willPublish": "yarn run lint && yarn run test && yarn run compile"
   },
   "repository": {
@@ -46,7 +46,9 @@
     "eslint": "^4.13.1",
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-import": "2.8.0",
+    "eslint-import-resolver-jest": "^2.0.1",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jest": "^21.13.0",
     "eslint-plugin-prettier": "^2.6.0",
     "jest": "^22.4.2",
     "nodemon": "^1.13.1",
