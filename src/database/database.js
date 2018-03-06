@@ -8,10 +8,10 @@
 /* eslint-disable class-methods-use-this */
 
 import RandomStringGenerator from "../helpers/randomStringGenerator";
-import loadJsonSync from "../helpers/fileTools";
+import { loadJsonSync } from "../helpers/fileTools";
 import ArrayQuery from "./arrayQuery";
 
-export default class Database {
+class Database {
   /**
    * Abstract Db Storage
    *
@@ -152,3 +152,5 @@ export default class Database {
     return this.rand.generate(length);
   }
 }
+
+export default Database;

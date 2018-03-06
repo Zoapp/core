@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import StringTools from "./helpers/stringTools";
-import FileTools from "./helpers/fileTools";
+import * as FileTools from "./helpers/fileTools";
 import RandomStringGenerator from "./helpers/randomStringGenerator";
 import Password from "./helpers/password";
 import dbCreate from "./database";

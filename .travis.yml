@@ -11,9 +11,7 @@ cache: yarn
 install: yarn
 script:
   - yarn lint
-  # we use `--runInBand` because different tests create/delete the database at
-  # the same time..
-  - yarn test --runInBand --forceExit
+  - yarn test
 
 jobs:
   include:
