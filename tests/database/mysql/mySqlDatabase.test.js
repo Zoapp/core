@@ -110,4 +110,27 @@ describe("database/mysql/mysqlDatabase", () => {
       expect(res).toBe(null);
     });
   });
+
+  describe("load()", () => {
+    let database;
+
+    beforeEach(async () => {
+      database = dbCreate({ descriptor, ...dbConfig });
+      await database.delete();
+    });
+
+    it("builds the schema by default", async () => {
+      await database.load();
+
+      const exists = await database.isTableExists("table1");
+      expect(exists).toEqual(true);
+    });
+
+    it("can skip building schema", async () => {
+      await database.load(false);
+
+      const exists = await database.isTableExists("table1");
+      expect(exists).toEqual(false);
+    });
+  });
 });

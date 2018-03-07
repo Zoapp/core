@@ -135,7 +135,7 @@ export default class MySQLDatabase extends Database {
     return this.connection;
   }
 
-  async load() {
+  async load(buildSchema = true) {
     if (this.connection) {
       await this.close();
     }
@@ -152,7 +152,10 @@ export default class MySQLDatabase extends Database {
       }
       await this.query("SET time_zone = '+00:00';"); // force this session to be UTC
     }
-    await this.build();
+
+    if (buildSchema) {
+      await this.build();
+    }
   }
 
   async close() {
