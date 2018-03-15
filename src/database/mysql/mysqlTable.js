@@ -592,12 +592,11 @@ export default class MySQLTable extends Table {
 
   async size(query = null) {
     let s = 0;
-    const sql = `SELECT COUNT(id) FROM ${MySQLDatabase.buildDbName(
+    const sql = `SELECT COUNT(id) as nb FROM ${MySQLDatabase.buildDbName(
       this.name,
     )} ${this.doWhereQuery(query)};`;
-    // TODO size with query
-    const [result] = await this.database.query(sql);
-    s = Number(Object.keys(result)[0]);
+    const [rows] = await this.database.query(sql);
+    s = Number(rows[0].nb);
     return s;
   }
 
