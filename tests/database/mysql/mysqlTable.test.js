@@ -51,7 +51,7 @@ describe("database/mysql/mysqlTable", () => {
         await table1.setItem(null, {
           id: item,
           name: item,
-          order: index + 1
+          order: index + 1,
         });
       });
 
@@ -134,7 +134,7 @@ describe("database/mysql/mysqlTable", () => {
 
     it("throws an error if `from` value is less than 1", async () => {
       await expect(table1.moveItem("parameter not used", 0, 1)).rejects.toThrow(
-        "`from` parameter must be > 0"
+        "`from` parameter must be > 0",
       );
     });
 
@@ -143,12 +143,12 @@ describe("database/mysql/mysqlTable", () => {
         await table1.setItem(null, {
           id: item,
           name: item,
-          order: index + 1
+          order: index + 1,
         });
       });
 
       await expect(table1.moveItem("parameter not used", 1, 3)).rejects.toThrow(
-        "`to` parameter is larger than the number of items"
+        "`to` parameter is larger than the number of items",
       );
     });
   });
@@ -166,26 +166,73 @@ describe("database/mysql/mysqlTable", () => {
       [
         {
           name: "it-3",
-          order: 2
+          order: 2,
         },
         {
           name: "it-2",
-          order: 1
+          order: 1,
         },
         {
           name: "it-1",
-          order: 3
-        }
-      ].forEach(async item => {
+          order: 3,
+        },
+      ].forEach(async (item) => {
         await table1.setItem(null, {
           id: item.name,
           name: item.name,
-          order: item.order
+          order: item.order,
         });
       });
 
       const items = await table1.getItems();
       expect(items.map((i) => i.id)).toEqual(["it-2", "it-3", "it-1"]);
+    });
+  });
+
+  describe("size", () => {
+    it("returns the number of results", async () => {
+      const database = dbCreate({ descriptor, ...dbConfig });
+      await database.reset();
+
+      const table1 = database.getTable("table1");
+
+      let count = await table1.size();
+      expect(count).toEqual(0);
+
+      await table1.setItem(null, {
+        id: "id1",
+      });
+      count = await table1.size();
+      expect(count).toEqual(1);
+
+      await table1.setItem(null, {
+        id: "id2",
+      });
+      count = await table1.size();
+      expect(count).toEqual(2);
+    });
+
+    it("returns the number of results restricted by a WHERE clause", async () => {
+      const database = dbCreate({ descriptor, ...dbConfig });
+      await database.reset();
+
+      const table1 = database.getTable("table1");
+
+      [
+        { name: "it-3", order: 2 },
+        { name: "it-2", order: 1 },
+        { name: "it-1", order: 3 },
+      ].forEach(async (item) => {
+        await table1.setItem(null, {
+          id: item.name,
+          name: item.name,
+          order: item.order,
+        });
+      });
+      let count = await table1.size("name='it-1'");
+      expect(count).toEqual(1);
+      count = await table1.size("name='it-0'");
+      expect(count).toEqual(0);
     });
   });
 });
