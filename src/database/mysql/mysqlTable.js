@@ -107,43 +107,37 @@ export default class MySQLTable extends Table {
     }
 
     let where = whereStatement;
-    if (queryName.indexOf("=") === -1) {
-      where += `\`idx\`='${queryName}'`;
+    const query = this.database.buildQuery(queryName);
+    // WIP create where statement from query
+    if (query.where) {
+      ({ where } = query);
     } else {
-      const query = this.database.buildQuery(queryName);
-      // WIP create where statement from query
-      if (query.where) {
-        ({ where } = query);
-      } else {
-        let prev = null;
-        query.cmps.forEach((cmp) => {
-          if (prev) {
-            where += prev.associate ? " OR " : " AND ";
-          }
+      let prev = null;
+      query.cmps.forEach((cmp) => {
+        if (prev) {
+          where += prev.associate ? " OR " : " AND ";
+        }
 
-          let k = cmp.key;
-          if (k === "id") {
-            k = "idx";
-          }
+        let k = cmp.key;
+        if (k === "id") {
+          k = "idx";
+        }
 
-          // TODO check type of value from descriptor
-          let op = ArrayQuery.operandString(cmp.op);
-          if (
-            cmp.value === "null" ||
-            cmp.value === "NULL" ||
-            cmp.value === "undefined"
-          ) {
-            op = op === "=" ? "IS" : "IS NOT";
-            where += `\`${k}\` ${op} NULL`;
-          } else {
-            where += `\`${k}\`${ArrayQuery.operandString(cmp.op)}'${
-              cmp.value
-            }'`;
-          }
-          prev = cmp;
-        });
-        query.where = where;
-      }
+        // TODO check type of value from descriptor
+        let op = ArrayQuery.operandString(cmp.op);
+        if (
+          cmp.value === "null" ||
+          cmp.value === "NULL" ||
+          cmp.value === "undefined"
+        ) {
+          op = op === "=" ? "IS" : "IS NOT";
+          where += `\`${k}\` ${op} NULL`;
+        } else {
+          where += `\`${k}\`${ArrayQuery.operandString(cmp.op)}'${cmp.value}'`;
+        }
+        prev = cmp;
+      });
+      query.where = where;
     }
 
     return where;
