@@ -258,7 +258,7 @@ export default class MySQLDatabase extends Database {
       if (!con) {
         throw new Error("no connection available");
       }
-
+      logger.log("debug", "executing query: %s", sql);
       return con.query(sql);
     } catch (e) {
       logger.log("error", "error in query: %s", e.message, { query: sql });
