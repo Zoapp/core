@@ -233,6 +233,8 @@ describe("database/mysql/mysqlTable", () => {
       expect(count).toEqual(1);
       count = await table1.size("name='it-0'");
       expect(count).toEqual(0);
+      count = await table1.size("order>1");
+      expect(count).toEqual(2);
     });
   });
 });
