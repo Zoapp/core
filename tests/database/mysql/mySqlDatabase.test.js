@@ -8,6 +8,8 @@ import dbCreate from "zoapp-core/database";
 
 import { descriptor, dbConfig } from "../../test-config";
 
+jest.setTimeout(50000);
+
 describe("database/mysql/mysqlDatabase", () => {
   test("Open/Create/Delete MySQL database", async () => {
     const database = dbCreate(dbConfig);
