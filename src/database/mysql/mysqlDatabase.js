@@ -53,31 +53,32 @@ export default class MySQLDatabase extends Database {
 
   reconnect(conf, delay) {
     if (this.connecting) {
-      return;
+      return this.connection;
     }
     this.connecting = true;
     this.delay = delay + 1000;
     if (this.delay > 20000) {
       /* eslint-disable no-undef */
+      logger.warn("MySQLDatabase connection timeout, needs to exit process");
       Process.exit(1);
       /* eslint-enable no-undef */
     }
     const that = this;
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         clearTimeout(timer);
         // logger.info("reconnect ", delay);
         that
-          .createConnection(conf)
-          .then(() => {
+          .createConnection(conf, true)
+          .then((cnx) => {
             that.connecting = false;
-            resolve();
+            resolve(cnx);
           })
           .catch(() => {
             reject();
           });
       }, delay);
-    }).then();
+    });
   }
 
   async createFirstConnection(conf) {
@@ -98,15 +99,17 @@ export default class MySQLDatabase extends Database {
     return this.connection;
   }
 
-  async createConnection(conf) {
+  async createConnection(conf, reco = false) {
     const that = this;
     try {
       this.connection = await mysql.createConnection(conf);
     } catch (e) {
       logger.error("error while connecting to MySQLDatabase:", e.code);
-      this.reconnect(conf, this.delay || 5000);
-
-      return null;
+      if (!reco) {
+        return null; // this.reconnect(conf, this.delay || 5000);
+      }
+      logger.warn("TODO Need to wait for previous reconnection");
+      return this.connection;
     }
 
     this.connection.connect((error) => {
@@ -259,12 +262,14 @@ export default class MySQLDatabase extends Database {
         throw new Error("no connection available");
       }
 
-      return con.query(sql);
+      if (sql && sql.trim().length > 0) {
+        return con.query(sql);
+      }
+      throw new Error("Empty query");
     } catch (e) {
       logger.log("error", "error in query: %s", e.message, { query: sql });
-
-      return null;
     }
+    return null;
   }
 
   async execute(sql, fields) {
@@ -275,15 +280,17 @@ export default class MySQLDatabase extends Database {
         throw new Error("no connection available");
       }
 
-      return con.execute(sql, fields);
+      if (fields && sql && sql.trim().length > 0) {
+        return con.execute(sql, fields);
+      }
+      throw new Error("Empty query");
     } catch (e) {
       logger.log("error", "error in execute: %s", e.message, {
         query: sql,
         fields,
       });
-
-      return null;
     }
+    return null;
   }
 
   async isTableExists(tableName) {

@@ -460,8 +460,11 @@ export default class MySQLTable extends Table {
     // logger.info("sql=", sql);
     const result = await this.database.query(sql);
     // logger.info("getItem result:", result);
-    const row = result[0][0];
     let item = null;
+    let row = null;
+    if (result) {
+      [[row]] = result;
+    }
     if (row) {
       item = this.rebind(row);
     }
