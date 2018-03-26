@@ -53,7 +53,7 @@ export default class MySQLDatabase extends Database {
 
   reconnect(conf, delay) {
     if (this.connecting) {
-      return;
+      return null;
     }
     this.connecting = true;
     this.delay = delay + 1000;
@@ -63,21 +63,21 @@ export default class MySQLDatabase extends Database {
       /* eslint-enable no-undef */
     }
     const that = this;
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         clearTimeout(timer);
         // logger.info("reconnect ", delay);
         that
           .createConnection(conf)
-          .then(() => {
+          .then((cnx) => {
             that.connecting = false;
-            resolve();
+            resolve(cnx);
           })
           .catch(() => {
             reject();
           });
       }, delay);
-    }).then();
+    });
   }
 
   async createFirstConnection(conf) {
@@ -104,9 +104,7 @@ export default class MySQLDatabase extends Database {
       this.connection = await mysql.createConnection(conf);
     } catch (e) {
       logger.error("error while connecting to MySQLDatabase:", e.code);
-      this.reconnect(conf, this.delay || 5000);
-
-      return null;
+      return this.reconnect(conf, this.delay || 5000);
     }
 
     this.connection.connect((error) => {
@@ -281,9 +279,8 @@ export default class MySQLDatabase extends Database {
         query: sql,
         fields,
       });
-
-      return null;
     }
+    return null;
   }
 
   async isTableExists(tableName) {
