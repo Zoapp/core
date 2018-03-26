@@ -257,12 +257,14 @@ export default class MySQLDatabase extends Database {
         throw new Error("no connection available");
       }
 
-      return con.query(sql);
+      if (sql && sql.trim().length > 0) {
+        return con.query(sql);
+      }
+      throw new Error("Empty query");
     } catch (e) {
       logger.log("error", "error in query: %s", e.message, { query: sql });
-
-      return null;
     }
+    return null;
   }
 
   async execute(sql, fields) {
@@ -273,7 +275,10 @@ export default class MySQLDatabase extends Database {
         throw new Error("no connection available");
       }
 
-      return con.execute(sql, fields);
+      if (fields && sql && sql.trim().length > 0) {
+        return con.execute(sql, fields);
+      }
+      throw new Error("Empty query");
     } catch (e) {
       logger.log("error", "error in execute: %s", e.message, {
         query: sql,
