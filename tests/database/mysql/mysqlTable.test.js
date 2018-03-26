@@ -224,17 +224,19 @@ describe("database/mysql/mysqlTable", () => {
 
       const table1 = database.getTable("table1");
 
-      await Promise.all([
-        { name: "it-3", order: 2 },
-        { name: "it-2", order: 1 },
-        { name: "it-1", order: 3 },
-      ].map(async (item) => {
-        await table1.setItem(null, {
-          id: item.name,
-          name: item.name,
-          order: item.order,
-        });
-      }));
+      await Promise.all(
+        [
+          { name: "it-3", order: 2 },
+          { name: "it-2", order: 1 },
+          { name: "it-1", order: 3 },
+        ].map(async (item) => {
+          await table1.setItem(null, {
+            id: item.name,
+            name: item.name,
+            order: item.order,
+          });
+        }),
+      );
       let count = await table1.size("name='it-1'");
       expect(count).toEqual(1);
       count = await table1.size("name='it-0'");
