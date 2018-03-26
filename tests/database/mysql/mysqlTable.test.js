@@ -47,13 +47,15 @@ describe("database/mysql/mysqlTable", () => {
     });
 
     it("reorders rows", async () => {
-      ["it-1", "it-2", "it-3", "it-4"].forEach(async (item, index) => {
-        await table1.setItem(null, {
-          id: item,
-          name: item,
-          order: index + 1,
-        });
-      });
+      await Promise.all(
+        ["it-1", "it-2", "it-3", "it-4"].map(async (item, index) => {
+          await table1.setItem(null, {
+            id: item,
+            name: item,
+            order: index + 1,
+          });
+        }),
+      );
 
       let items = await table1.getItems();
       expect(items.map((i) => i.id)).toEqual(["it-1", "it-2", "it-3", "it-4"]);
@@ -139,13 +141,15 @@ describe("database/mysql/mysqlTable", () => {
     });
 
     it("throws an error when `to` value is larger than the items", async () => {
-      ["it-1", "it-2"].forEach(async (item, index) => {
-        await table1.setItem(null, {
-          id: item,
-          name: item,
-          order: index + 1,
-        });
-      });
+      await Promise.all(
+        ["it-1", "it-2"].map(async (item, index) => {
+          await table1.setItem(null, {
+            id: item,
+            name: item,
+            order: index + 1,
+          });
+        }),
+      );
 
       await expect(table1.moveItem("parameter not used", 1, 3)).rejects.toThrow(
         "`to` parameter is larger than the number of items",
@@ -163,26 +167,28 @@ describe("database/mysql/mysqlTable", () => {
 
       const table1 = database.getTable("table1");
       // insert items in controlled-random order
-      [
-        {
-          name: "it-3",
-          order: 2,
-        },
-        {
-          name: "it-2",
-          order: 1,
-        },
-        {
-          name: "it-1",
-          order: 3,
-        },
-      ].forEach(async (item) => {
-        await table1.setItem(null, {
-          id: item.name,
-          name: item.name,
-          order: item.order,
-        });
-      });
+      await Promise.all(
+        [
+          {
+            name: "it-3",
+            order: 2,
+          },
+          {
+            name: "it-2",
+            order: 1,
+          },
+          {
+            name: "it-1",
+            order: 3,
+          },
+        ].map(async (item) => {
+          await table1.setItem(null, {
+            id: item.name,
+            name: item.name,
+            order: item.order,
+          });
+        }),
+      );
 
       const items = await table1.getItems();
       expect(items.map((i) => i.id)).toEqual(["it-2", "it-3", "it-1"]);
@@ -218,17 +224,17 @@ describe("database/mysql/mysqlTable", () => {
 
       const table1 = database.getTable("table1");
 
-      [
+      await Promise.all([
         { name: "it-3", order: 2 },
         { name: "it-2", order: 1 },
         { name: "it-1", order: 3 },
-      ].forEach(async (item) => {
+      ].map(async (item) => {
         await table1.setItem(null, {
           id: item.name,
           name: item.name,
           order: item.order,
         });
-      });
+      }));
       let count = await table1.size("name='it-1'");
       expect(count).toEqual(1);
       count = await table1.size("name='it-0'");
