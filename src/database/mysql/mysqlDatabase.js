@@ -53,12 +53,13 @@ export default class MySQLDatabase extends Database {
 
   reconnect(conf, delay) {
     if (this.connecting) {
-      return null;
+      return this.connection;
     }
     this.connecting = true;
     this.delay = delay + 1000;
     if (this.delay > 20000) {
       /* eslint-disable no-undef */
+      logger.warn("MySQLDatabase connection timeout, needs to exit process");
       Process.exit(1);
       /* eslint-enable no-undef */
     }
@@ -68,7 +69,7 @@ export default class MySQLDatabase extends Database {
         clearTimeout(timer);
         // logger.info("reconnect ", delay);
         that
-          .createConnection(conf)
+          .createConnection(conf, true)
           .then((cnx) => {
             that.connecting = false;
             resolve(cnx);
@@ -98,13 +99,17 @@ export default class MySQLDatabase extends Database {
     return this.connection;
   }
 
-  async createConnection(conf) {
+  async createConnection(conf, reco = false) {
     const that = this;
     try {
       this.connection = await mysql.createConnection(conf);
     } catch (e) {
       logger.error("error while connecting to MySQLDatabase:", e.code);
-      return this.reconnect(conf, this.delay || 5000);
+      if (!reco) {
+        return null; // this.reconnect(conf, this.delay || 5000);
+      }
+      logger.warn("TODO Need to wait for previous reconnection");
+      return this.connection;
     }
 
     this.connection.connect((error) => {
