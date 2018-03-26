@@ -93,7 +93,8 @@ class ArrayQuery {
           buffer = "or";
           space = false;
         }
-      } else {
+      } else if (c !== 39 && c !== 34) {
+        // Not a " or '
         logger.info(`Unknown character at line ${i} ${c}`);
       }
 
