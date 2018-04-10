@@ -19,6 +19,8 @@ NodeJS.
 First of all, make sure you have [Node 8.x](https://nodejs.org/en/download/) and
 [Yarn](https://yarnpkg.com/en/docs/install) installed.
 
+You will also need [MariaDB 10.2](https://mariadb.org/) or [mysql 5.7](https://www.mysql.com/).
+
 
 ## Contributing
 
