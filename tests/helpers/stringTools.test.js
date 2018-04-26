@@ -59,6 +59,7 @@ describe("helpers/stringTools", () => {
     expect(StringTools.isEmail("t@g.co")).toBe(true);
     expect(StringTools.isEmail("t.t@g.co")).toBe(true);
     expect(StringTools.isEmail("t.t@g.co  ")).toBe(true);
+    expect(StringTools.isEmail("t+t@g.co  ")).toBe(true);
   });
 
   test("string strcasecmp", () => {
