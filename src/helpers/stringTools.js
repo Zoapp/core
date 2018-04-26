@@ -35,10 +35,13 @@ export default class StringTools {
     return typeof str === "string" ? str.trim().length < 1 : true;
   }
 
+  // see https://github.com/symfony/validator/blob/master/Constraints/EmailValidator.php
   static isEmail(email) {
     let ret = false;
     if (!StringTools.stringIsEmpty(email)) {
-      ret = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email.trim());
+      ret = /^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/.test(
+        email.trim(),
+      );
     }
     return ret;
   }
