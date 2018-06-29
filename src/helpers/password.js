@@ -30,19 +30,21 @@ export default class Password {
     return strength;
   }
 
-  // Not secure at all SaltHash generator
   static generateSaltHash(password, salt = null) {
-    // TODO salthash
     let hash = null;
     if (salt) {
       const sha512sum = crypto.createHmac("sha512", salt);
       sha512sum.update(password);
-      hash = hash.digest("hex");
+      hash = sha512sum.digest("hex");
     } else {
       const sha1sum = crypto.createHash("sha1");
       sha1sum.update(password);
       hash = sha1sum.digest("hex");
     }
     return hash;
+  }
+
+  static generateSalt() {
+    return crypto.randomBytes(64).toString("hex");
   }
 }
