@@ -66,7 +66,7 @@ export default class RandomStringGenerator {
       crypto.randomBytes(maxBytes).toString("hex"),
       16,
     );
-    const rnd = Math.floor(randbytes / maxDec * range + min);
+    const rnd = Math.floor(range * (randbytes / maxDec) + min);
     return rnd;
   }
 }

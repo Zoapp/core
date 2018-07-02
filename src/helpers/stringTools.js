@@ -4,15 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import crypto from "crypto";
 
 export default class StringTools {
-  static hashPassword(password) {
-    const sha1sum = crypto.createHash("sha1");
-    sha1sum.update(password);
-    return sha1sum.digest("hex");
-  }
-
   static strcasecmp(str1, str2) {
     const st1 = str1 ? str1.toLowerCase().trim() : null;
     const st2 = str2 ? str2.toLowerCase().trim() : null;
