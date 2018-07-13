@@ -94,6 +94,43 @@ describe("database/mysql/mysqlDatabase", () => {
   });
 
   describe("query()", () => {
+    it("should return table content", async () => {
+      const database = dbCreate({ descriptor, ...dbConfig });
+      await database.reset();
+
+      const exists = await database.exists();
+      expect(exists).toBe(true);
+
+      const table1 = database.getTable("table1");
+      await Promise.all(
+        [
+          {
+            name: "it-3",
+            order: 2,
+          },
+          {
+            name: "it-2",
+            order: 1,
+          },
+          {
+            name: "it-1",
+            order: 3,
+          },
+        ].map(async (item) => {
+          await table1.setItem(null, {
+            id: item.name,
+            name: item.name,
+            order: item.order,
+          });
+        }),
+      );
+
+      // select names
+      const res = await database.query("SELECT name FROM table1");
+      const names = res[0].map((row) => row.name);
+      expect(names).toEqual(["it-3", "it-2", "it-1"]);
+    });
+
     it("handles error", async () => {
       const db = dbCreate({ ...dbConfig, user: "unknown" });
 
