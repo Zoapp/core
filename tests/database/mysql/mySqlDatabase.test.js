@@ -170,4 +170,36 @@ describe("database/mysql/mysqlDatabase", () => {
       expect(exists).toEqual(false);
     });
   });
+
+  describe("applyMigration()", () => {
+    it("make new migration", async () => {
+      const database = dbCreate({ descriptor, ...dbConfig });
+      await database.reset();
+
+      expect(await database.isTableExists("migrationTable")).toEqual(true);
+      const migrationTable = database.getTable("migrationTable");
+      expect(await migrationTable.size()).toBe(0);
+
+      await database.applyMigration("migrationTable", "1", "migration_1", []);
+      expect(await migrationTable.size()).toBe(1);
+
+      await database.applyMigration("migrationTable", "2", "migration_2", []);
+      expect(await migrationTable.size()).toBe(2);
+    });
+
+    it("should run a migration only once", async () => {
+      const database = dbCreate({ descriptor, ...dbConfig });
+      await database.reset();
+
+      expect(await database.isTableExists("migrationTable")).toEqual(true);
+      const migrationTable = database.getTable("migrationTable");
+      expect(await migrationTable.size()).toBe(0);
+
+      await database.applyMigration("migrationTable", "1", "migration_1", []);
+      expect(await migrationTable.size()).toBe(1);
+
+      await database.applyMigration("migrationTable", "1", "migration_1", []);
+      expect(await migrationTable.size()).toBe(1);
+    });
+  });
 });
