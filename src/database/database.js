@@ -120,6 +120,10 @@ class Database {
     });
   }
 
+  async applyMigration(migrationLogTable, migrationId, migrationName, queries) {
+    throw new Error("Database applyMigration: Need to superclass it");
+  }
+
   getName() {
     return this.name;
   }
