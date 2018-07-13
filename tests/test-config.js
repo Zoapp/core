@@ -65,6 +65,20 @@ export const descriptor = {
         },
       },
     },
+    migrationTable: {
+      title: "MigrationTable",
+      properties: {
+        id: {
+          type: "#Id",
+        },
+        name: {
+          type: "string",
+        },
+        run_on: {
+          type: "#DateTime",
+        },
+      },
+    },
   },
 };
 

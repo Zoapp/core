@@ -161,6 +161,31 @@ export default class MySQLDatabase extends Database {
     }
   }
 
+  /**
+   * @param {string} migrationLogTable - The name of the table that log migrations done.
+   * @param {*} migrationId - The id of the migration. Must be unique.
+   * @param {string} migrationName  - The name of the migration, without space, must be unique.
+   * @param {array} queries - An array of SQL queries.
+   * The migration queries will be applied if migrationName is not already logged in migrationLogTable.
+   */
+  async applyMigration(migrationLogTable, migrationId, migrationName, queries) {
+    const table = this.getTable(migrationLogTable);
+    const count = await table.size(`name=${migrationName}`);
+    if (count === 0) {
+      // make migration
+      logger.info("apply migration", migrationName);
+      queries.forEach((query) => {
+        this.query(query);
+      });
+      // log migration
+      await table.setItem(null, {
+        id: migrationId,
+        name: migrationName,
+        run_on: Date(),
+      });
+    }
+  }
+
   async close() {
     if (!this.parent && this.connection) {
       const c = this.connection;

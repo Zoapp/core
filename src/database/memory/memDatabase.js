@@ -22,6 +22,19 @@ export default class MemDatabase extends Database {
     this.loaded = false;
   }
 
+  async applyMigration(migrationLogTable, migrationId, migrationName) {
+    const table = this.getTable(migrationLogTable);
+    const mig = await table.getItem(`name=${migrationName}`);
+    if (!mig) {
+      // log migration
+      await table.setItem(null, {
+        id: migrationId,
+        name: migrationName,
+        run_on: Date(),
+      });
+    }
+  }
+
   async isTableExists(tableName) {
     return !!this.cache[tableName];
   }
