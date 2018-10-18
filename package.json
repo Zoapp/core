@@ -59,6 +59,7 @@
     "moduleNameMapper": {
       "zoapp-core/(.*)": "<rootDir>/src/$1"
     },
-    "setupTestFrameworkScriptFile": "<rootDir>/tests/setupTests.js"
+    "setupTestFrameworkScriptFile": "<rootDir>/tests/setupTests.js",
+    "testURL": "http://localhost/"
   }
 }
