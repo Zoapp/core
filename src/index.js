@@ -9,6 +9,7 @@ import * as FileTools from "./helpers/fileTools";
 import RandomStringGenerator from "./helpers/randomStringGenerator";
 import Password from "./helpers/password";
 import dbCreate from "./database";
+import EmailService from "./service/email";
 import setupLogger from "./helpers/logger";
 
 export {
@@ -17,5 +18,6 @@ export {
   Password,
   RandomStringGenerator,
   dbCreate,
+  EmailService,
   setupLogger,
 };
