@@ -6,28 +6,60 @@
  */
 import { createTransport } from "nodemailer";
 
-export default class {
+export default class EmailService {
   constructor(parameters) {
     // TODO check parameters
     this.parameters = parameters;
   }
 
-  async open(parameters = this.parameters) {
-    const smtpConfig = {
-      host: parameters.host,
-      port: parameters.port,
-      secure: true,
+  static getParametersSchema() {
+    return {
+      host: { type: "string" },
+      port: { type: "number" },
+      secure: { type: "boolean" },
       auth: {
-        user: parameters.username,
-        pass: parameters.password,
+        type: "object",
+        child: {
+          user: { type: "string" },
+          pass: { type: "string" },
+        },
       },
     };
+  }
 
-    this.transporter = createTransport(smtpConfig);
+  static validateParameters(
+    parameters,
+    schema = EmailService.getParametersSchema(),
+  ) {
     try {
+      Object.entries(schema).forEach(([ks, vs]) => {
+        const { type } = vs;
+        const [kp, vp] = Object.entries(parameters).find(([k]) => ks === k);
+        if (!kp) {
+          throw new Error(`Missing property ${ks}`);
+        }
+
+        // eslint-disable-next-line valid-typeof
+        if (!(typeof vp === type)) {
+          throw new Error(`Property ${ks} must be an instance of ${type}`);
+        }
+
+        if (type === Object) {
+          this.validateParameters(vp, vs.child);
+        }
+      });
+    } catch (error) {
+      throw new Error(`Invalid smtp parameters: ${error.message}`);
+    }
+  }
+
+  async open(parameters = this.parameters) {
+    try {
+      EmailService.validateParameters(parameters);
+      this.transporter = createTransport(parameters);
       await this.transporter.verify();
     } catch (error) {
-      throw new Error("can`t configure SMTP ", error);
+      throw new Error(`Can't configure SMTP, ${error.message}`);
     }
     if (this.parameters !== parameters) {
       this.parameters = parameters;
