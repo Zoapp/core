@@ -24,6 +24,12 @@ export default class EmailService {
           pass: { type: "string" },
         },
       },
+      defaultParams: {
+        type: "object",
+        child: {
+          from: { type: "string" },
+        },
+      },
     };
   }
 
@@ -32,12 +38,13 @@ export default class EmailService {
     schema = EmailService.getParametersSchema(),
   ) {
     try {
-      Object.entries(schema).forEach(([ks, vs]) => {
-        const { type } = vs;
-        const [kp, vp] = Object.entries(parameters).find(([k]) => ks === k);
-        if (!kp) {
+      Object.entries(schema).forEach(([ks, { type, child }]) => {
+        const p = Object.entries(parameters).find(([k]) => ks === k);
+        if (!p) {
           throw new Error(`Missing property ${ks}`);
         }
+
+        const [, vp] = p;
 
         // eslint-disable-next-line valid-typeof
         if (!(typeof vp === type)) {
@@ -45,7 +52,7 @@ export default class EmailService {
         }
 
         if (type === Object) {
-          this.validateParameters(vp, vs.child);
+          this.validateParameters(vp, child);
         }
       });
     } catch (error) {
@@ -56,7 +63,7 @@ export default class EmailService {
   async open(parameters = this.parameters) {
     try {
       EmailService.validateParameters(parameters);
-      this.transporter = createTransport(parameters);
+      this.transporter = createTransport(parameters, parameters.defaultParams);
       await this.transporter.verify();
     } catch (error) {
       throw new Error(`Can't configure SMTP, ${error.message}`);
@@ -77,7 +84,7 @@ export default class EmailService {
     try {
       await this.transporter.sendMail(message);
     } catch (error) {
-      throw new Error("can't send this message ", error);
+      throw new Error(`Can't send this message: ${error.message}`);
     }
   }
 }
