@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "mysql2": "^1.5.1",
-    "nodemailer": "6.4.16",
+    "nodemailer": "6.6.1",
     "winston": "2.4.0"
   },
   "devDependencies": {
